@@ -12,15 +12,21 @@ app.CartView = Backbone.View.extend({
 		"click .button_cancel_next_week": "cancelNextWeek"
 	},
 	cancel: function(event) {
-		console.log("cancel");
-		//delete data from corresponding models
 		//get data
-		console.log(app.objectBuffer);
+		var item = app.Carts.findWhere({ 
+			tutor: app.objectBuffer.tutor, 
+			course: app.objectBuffer.course,
+			time: app.objectBuffer.time
+		});
+		if (item) {
+			app.Carts.remove(item);
+		}
+		console.log("send emails to both client and tutor");
 		header_view.showCart();	
 	},
 	cancelNextWeek: function(event) {
-		console.log("cancel next week");
 		//send email
+		console.log("send emails to both client and tutor");
 		//get data
 		console.log(app.objectBuffer);
 	}

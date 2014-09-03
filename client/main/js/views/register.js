@@ -44,7 +44,8 @@ app.RegisterView = Backbone.View.extend({
 	},
 	register: function(event) {
 		event.preventDefault();
-		console.log("register");
+		var client = app.Clients.findWhere({ MUid: "sunj3" });
+
 		//get data
 		var options1 = $("#chosenCourse")[0].options;
 		var waitinglist = [];
@@ -56,8 +57,8 @@ app.RegisterView = Backbone.View.extend({
 		for (var i = 0, n = options2.length; i < n; i++) {
 			availableTime.push(options2[i].value);
 		}
-		console.log(waitinglist);
-		console.log(availableTime);
+		client.attributes.course_in_waitinglist = waitinglist;
+		client.attributes.time_available = availableTime;
 		//change model
 		//update view
 		header_view.showRegister();

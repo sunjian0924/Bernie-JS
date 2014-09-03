@@ -26,14 +26,15 @@ app.HeaderView = Backbone.View.extend({
 		//retrieve current user's info
 		var client_info = app.Clients.models[0];
 		var course_taking = client_info.attributes.course_taking;
-		var course_chosen = client_info.attributes.course_chosen;
+		var course_chosen = client_info.attributes.course_chosen.concat(client_info.attributes.course_in_waitinglist);
+
 		var course_not_chosen = _.difference(course_taking, course_chosen);
 		for (var i = 0, n = course_not_chosen.length; i < n; i++) {
 			$("#availableCourse").append('<option value=' + course_not_chosen[i] + '>' + course_not_chosen[i] + '</option>');
 		}
 		var course_in_waitinglist = client_info.attributes.course_in_waitinglist;
 		for (var i = 0, n = course_in_waitinglist.length; i < n; i++) {
-			$("#chosenCourse").append('<option value=' + course_in_waitinglist[i] + '>' + course_in_waitinglist + '</option>');
+			$("#chosenCourse").append('<option value=' + course_in_waitinglist[i] + '>' + course_in_waitinglist[i] + '</option>');
 		}
 		var time_available = client_info.attributes.time_available;
 		for (var i = 0, n = time_available.length; i < n; i++) {
@@ -61,7 +62,7 @@ app.HeaderView = Backbone.View.extend({
 				owner: $(".owner", me.parent().parent())[0].innerHTML,
 				course: $(".course", me.parent().parent())[0].innerHTML,
 				post_time: $(".post_time", me.parent().parent())[0].innerHTML,
-				time: $(".time_chosen", me.parent().parent())[0].options[$(".time_chosen", me.parent().parent())[0].selectedIndex].value
+				time_available: $(".time_chosen", me.parent().parent())[0].options[$(".time_chosen", me.parent().parent())[0].selectedIndex].value
 			};
 		});
 	},
@@ -105,15 +106,15 @@ app.HeaderView = Backbone.View.extend({
 	redraw: function() {
 		$("#home_container").remove();
 		$("#profile_container").remove();
-		$("#register_container").remove();
-		$("#shopping_container").remove();
+		$("#register_container").remove();	
 		$("#cart_container").remove();
+		$("#shopping_container").remove();
 		$("#admin_container").remove();
 		$("#containers").append('<div id="home_container"></div>');
 		$("#containers").append('<div id="profile_container"></div>');
-		$("#containers").append('<div id="register_container"></div>');
-		$("#containers").append('<div id="shopping_container"></div>');
+		$("#containers").append('<div id="register_container"></div>');	
 		$("#containers").append('<div id="cart_container"></div>');
+		$("#containers").append('<div id="shopping_container"></div>');
 		$("#containers").append('<div id="admin_container"></div>');
 	}
 });

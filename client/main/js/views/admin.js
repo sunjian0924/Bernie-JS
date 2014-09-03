@@ -18,7 +18,7 @@ app.AdminView = Backbone.View.extend({
 		var MUid = $(this.el).find('input#MUid').val();
 		var expertise = $(this.el).find('input#expertise').val();
 		//find MUid
-		var tutor = app.Tutors.findWhere({ MUid: MUid});
+		var tutor = app.Tutors.findWhere({ MUid: MUid });
 		if (tutor) {
 			tutor.attributes.expertises.push(expertise);
 		} else if (MUid && expertise) {
@@ -32,10 +32,13 @@ app.AdminView = Backbone.View.extend({
 		header_view.showAdmin();		
 	},
 	deleteAdmin: function(event) {
-		console.log("deleteAdmin");
 		//get data
-		console.log(app.objectBuffer);
+		var tutor = app.Tutors.findWhere({ MUid: app.objectBuffer.MUid });
 		//change model
+		if (tutor) {
+			app.Tutors.remove(tutor);
+		}
+		
 		//update view
 		header_view.showAdmin();	
 	}

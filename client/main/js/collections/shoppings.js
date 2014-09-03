@@ -15,7 +15,8 @@ var ShoppingList = Backbone.Collection.extend({
 	localStorage: new Backbone.LocalStorage('shoppings'),
 });
       // Create our global collection of **Todos**.
-app.Shoppings = new ShoppingList([
+app.Shoppings = new ShoppingList();
+app.Shoppings.add([
 		{
 			owner: "sunj3", //MUid
 			course: ["cse617", "cse123"], 
@@ -23,7 +24,6 @@ app.Shoppings = new ShoppingList([
 			time_available: ['3-4pm', '1-2am']
 		}
 	]);
-
 
 
 

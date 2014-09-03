@@ -20,7 +20,7 @@ app.Clients = new ClientList([
 			MUid: 'sunj3', 
 			username: 'sunjian', 
 			course_taking: ['cse123', 'cse234', 'cse432'],
-			course_chosen: ['cse123', 'cse234'],
+			course_chosen: ['cse234'],
 			course_in_waitinglist: ['cse123'],
 			time_chosen: ['2-3am', '4-5am'],
 			time_available: ['2-3am']

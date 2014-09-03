@@ -11,12 +11,28 @@ app.ShoppingView = Backbone.View.extend({
 		"click .button_add_to_cart": "addToCart"
 	},
 	addToCart: function(event) {
-		console.log("add to cart");
-		//get data
-		console.log(app.objectBuffer);
-		//change model
-		//update view
-		header_view.showShopping();
+		if (app.objectBuffer.time_available === "default") {
+			alert("choose a time!!");
+		} else {
+			//get data
+			var item = app.Shoppings.findWhere({ owner: app.objectBuffer.owner });
+			//change model
+			if (item) {
+				var attributes = item.attributes;
+				if (attributes.course.length > 1) {
+					var index1 = attributes.course.indexOf(app.objectBuffer.course);
+					attributes.course.splice(index1, index1 + 1);
+					var index2 = attributes.course.indexOf(app.objectBuffer.post_time);
+					attributes.post_time.splice(index2, index2 + 1);
+					var index3 = attributes.time_available.indexOf(app.objectBuffer.time_available);
+					attributes.time_available.splice(index3, index3 + 1);
+				} else {
+					app.Shoppings.remove(item);
+				}
+			}
+			//update view
+			header_view.showShopping();
+		}
 	}
 });
 
