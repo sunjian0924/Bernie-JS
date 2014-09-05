@@ -11,7 +11,7 @@ app.ShoppingView = Backbone.View.extend({
 		"click .button_add_to_cart": "addToCart"
 	},
 	addToCart: function(event) {
-		if (app.objectBuffer.time_available === "default") {
+		if (app.objectBuffer.time === "default") {
 			alert("choose a time!!");
 		} else {
 			//update database
