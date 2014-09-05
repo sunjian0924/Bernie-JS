@@ -8,11 +8,9 @@ var application_root = __dirname,
 	methodOverride = require('method-override'),
 	morgan = require('morgan'),
 	mysql = require('mysql'),
-	mongoose = require('mongoose'),
 	CAS = require('cas'),
 	cookieParser = require('cookie-parser'),
-	session = require('express-session'),
-	evh = require('express-vhost');
+	session = require('express-session');
 
 //configure cas
 var cas = new CAS({
@@ -34,36 +32,10 @@ var connectionPool = mysql.createPool({
 	host: 'localhost',
 	user: 'root',
 	password: 'wbzas4225069',
-	database: 'Bernie'
+	database: 'Bernie',
+	multipleStatements: true
 });
 
-mongoose.connect('mongodb://127.0.0.1/Bernie');
-
-//Schemas
-var Client = new mongoose.Schema({
-	MUid: String,
-	username: String,
-	course_taking: String, //list of courses the student is currently taking
-	course_chosen: String, //list of courses the student need help in
-	time_available: String //list of times the student is available during a week
-});
-
-var Tutor = new mongoose.Schema({
-	MUid: String,
-	username: String,
-	expertises: String, //list of courses this tutor is eligible of tutoring
-	wishlist: String,
-	cart: String, //list of courses this tutor has registered for tutoring
-});
-
-var Admin = new mongoose.Schema({
-	MUid: String,
-	username: String
-});
-//Models
-var ClientModel = mongoose.model('Client', Client);
-var TutorModel = mongoose.model('Tutor', Tutor);
-var AdminModel = mongoose.model('Admin', Admin);
 
 // Configure server
 //parse application/x-www-form-urlencoded
@@ -97,140 +69,123 @@ app.use(express.static(path.join(application_root, '../client/main')));
 /*
 	REST APIs
 */
-//clear, just for testing
-app.post('/clear', function(req, res) {
-	ClientModel.find(function(err, clients) {
-		for (var i = 0, n = clients.length; i < n; i++) {
-			(function(j) {
-				clients[j].remove(function(err) {
-					if (err) throw err;
-				});
-			})(i);
-			
-		}
-		res.send('success');
+//get all the hired tutors
+app.get('/admin', function(req, res) {
+	var sql = "select * from hiredtutors";
+	connectionPool.query(sql, function(err, rows) {
+		res.send(rows);
 	});
 });
-//get all the clients
-app.get('/clients', function(req, res) {
-	return ClientModel.find(function(err, clients) {
-		return res.send(clients);
-	});
-});
-
-//add a new client
-app.post('/clients', function(req, res) {
-	var client = new ClientModel({
-		MUid: req.body.MUid,
-		username: req.body.username,
-		course_taking: req.body.course_taking,
-		course_chosen: req.body.course_chosen,
-		time_available: req.body.time_available
-	});
-	client.save(function(err) {
-		if (err) console.log(err);
-		res.send('success');
-	});
-});
-
-//get the client with MUid of :id
-app.get('/clients/:id', function(req, res) {
-	ClientModel.find({ MUid: req.params.id }, function(err, client) {
-		res.send(client);
-	});
-});
-
-//update the client with MUid of :id
-app.put('/clients/:id', function(req, res) {
-	ClientModel.find({ MUid: req.params.id }, function(err, client) {
-		for (var i in req.body) {
-			client[i] = req.body[i];
-		}
-		client.save(function(err) {
-			if (err) throw err;
-			res.send('success');
-		});
-	});
-});
-
-//get all the tutors
-app.get('/tutors', function(req, res) {
-	return TutorModel.find(function(err, tutors) {
-		return res.send(tutors);
-	});
-});
-
-//get the tutor with MUid of :id
-app.get('/tutors/:id', function(req, res) {
-	TutorModel.find({ MUid: req.params.id }, function(err, tutor) {
-		res.send(tutor);
-	});
-});
-
 //add a new tutor
-app.post('/tutors', function(req, res) {
-	var tutor = new TutorModel({
-		MUid: req.body.MUid,
-		username: req.body.username,
-		expertises: req.body.expertises,
-		wishlist: req.body.wishlist,
-		cart: req.body.cart,
-	});
-	tutor.save(function(err) {
-		if (err) throw err;
-		res.send('success');
+app.post('/admin', function(req, res) {
+	var sql = "insert into hiredtutors (MUid, created_at, updated_at, expertise) values ('" + req.body.MUid + "', NOW()" + ", NOW(), '" + req.body.expertise + "')";
+	connectionPool.query(sql, function(err, result) {
+		res.send(result);
 	});
 });
 
-//update a tutor with MUid of :id
-app.put('/tutors/:id', function(req, res) {
-	TutorModel.find({ MUid: req.params.id }, function(err, tutor) {
-		for (var i in req.body) {
-			tutor[i] = req.body[i];
-		}
-		tutor.save(function(err) {
-			if (err) throw err;
-			res.send('success');
-		});
+//delete a new tutor
+app.delete('/admin', function(req, res) {
+	var sql = "delete from hiredtutors where MUid='" + req.body.MUid + "' and expertise='" + req.body.expertise + "'";
+	connectionPool.query(sql, function(err, result) {
+		res.send(result);
 	});
 });
 
-//delete a tutor with MUid of :id
-app.delete('/tutors/:id', function(req, res) {
-	TutorModel.find({ MUid: req.params.id }, function(err, tutor) {
-		tutor.remove(function(err) {
-			if (err) throw err;
-			res.send('success');
-		});
+//get cart info with MUid of :id
+app.get('/cart/:id', function(req, res) {
+	var sql = "select * from tutors where MUid=" + mysql.escape(req.params.id);
+	connectionPool.query(sql, function(err, rows) {
+		res.send(rows);
+	});
+});
+//add a new item into the cart with MUid of :id
+app.post('/cart', function(req, res) {
+	var sql = "insert into tutors (MUid, customer, time, courseID) values ('" + req.body.MUid + "', '" + req.body.owner + "', '" + req.body.time + "', '" + req.body.course + "')";
+	connectionPool.query(sql, function(err, result) {
+		res.send(result);
+	}); 
+});
+//delete a new item from cart
+app.delete('/cart', function(req, res) {
+	var sql = "delete from tutors where MUid='" + req.body.tutor + "' and customer='" + req.body.customer + "' and time='" + req.body.time + "' and courseID='" + req.body.course + "'";
+	connectionPool.query(sql, function(err, result) {
+		res.send(result);
 	});
 });
 
-//get all the admin members
-app.get('/admins', function(req, res) {
-	return AdminModel.find(function(err, admins) {
-		return res.send(admins);
+app.get('/register/:id', function(req, res) {
+	var sql1 = "select courseID from academics where MUid=" + mysql.escape(req.params.id);
+	var sql2 = "select time from clienttimes where MUid=" + mysql.escape(req.params.id);
+	var sql3 = "select courseID from clientcourses where MUid=" + mysql.escape(req.params.id);
+	var sql4 = "select courseID, time from tutors where customer=" + mysql.escape(req.params.id);
+	var sql = sql1 + "; " + sql2 + "; " + sql3 + "; " + sql4;
+	connectionPool.query(sql, function(err, results) {	
+		var data = {
+			courses_taking: results[0],
+			times_available: results[1],
+			courses_in_waitinglist: results[2],
+			courses_times_chosen: results[3]
+		};
+		res.send(data);
+	});
+});
+//update register
+app.put('/register', function(req, res) {
+	//delete all 
+	//add all
+	var sql1 = "delete from clientcourses where MUid='" + req.body.MUid + "'";
+	var sql2 = "delete from clienttimes where MUid='" + req.body.MUid + "'";
+	var addCourseSqls = [];
+	req.body.waitinglist = JSON.parse(req.body.waitinglist);
+	req.body.availableTime = JSON.parse(req.body.availableTime);
+	for (var i = 0, n = req.body.waitinglist.length; i < n; i++) {
+		addCourseSqls.push("insert into clientcourses (MUid, courseID, updated_at) values ('" + req.body.MUid + "', '" + req.body.waitinglist[i] + "', NOW())");
+	}
+	var addTimeSqls = [];
+	for (var i = 0, n = req.body.availableTime.length; i < n; i++) {
+		addTimeSqls.push("insert into clienttimes (MUid, time, updated_at) values ('" + req.body.MUid + "', '" + req.body.availableTime[i] + "', NOW())");
+	}
+	var sql = sql1 + "; " + sql2;
+	for (var i = 0, n = addCourseSqls.length; i < n; i++) {
+		sql += "; " + addCourseSqls[i];
+	}
+	for (var i = 0, n = addTimeSqls.length; i < n; i++) {
+		sql += "; " + addTimeSqls[i];
+	}
+	connectionPool.query(sql, function(err, result) {
+		res.send(result);
 	});
 });
 
-//add a new admin member
-app.post('/admins', function(req, res) {
-	var admin = new AdminModel({
-		MUid: req.body.MUid,
-		username: req.body.username
+//get all the published help requests
+app.get('/shopping', function(req, res) {
+	var sql1 = "select * from clientcourses";
+	var sql2 = "select * from clienttimes";
+	var sql = sql1 + "; " + sql2;
+	connectionPool.query(sql, function(err, results) {
+		var data = {
+			clientcourses: results[0],
+			clienttimes: results[1]
+		};
+		res.send(data);
 	});
 });
-
-//delete an admin member with MUid of :id
-app.delete('/admins/:id', function(req, res) {
-	AdminModel.find({ MUid: req.params.id }, function(err, admin) {
-		admin.remove(function(err) {
-			if (err) throw err;
-			res.send('success');
-		});
+//
+app.delete('/shopping', function(req, res) {
+	var sql1 = "delete from clientcourses where MUid='" + req.body.owner + "' and courseID='" + req.body.course + "'";
+	var sql2 = "delete from clienttimes where MUid='" + req.body.owner + "' and time='" + req.body.time + "'";
+	var sql = sql1 + "; " + sql2; 
+	connectionPool.query(sql, function(err, result) {
+		res.send(result);
 	});
 });
+//
 
 
+app.get('/profile/:id', function(req, res) {
+
+});
 
 
 

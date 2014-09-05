@@ -12,23 +12,27 @@ app.CartView = Backbone.View.extend({
 		"click .button_cancel_next_week": "cancelNextWeek"
 	},
 	cancel: function(event) {
-		//get data
-		var item = app.Carts.findWhere({ 
-			tutor: app.objectBuffer.tutor, 
-			course: app.objectBuffer.course,
-			time: app.objectBuffer.time
+		//
+		$.ajax({
+			url: '/cart',
+			type: 'delete',
+			data: {
+				tutor: app.objectBuffer.tutor,
+				customer: "sunj3", //the user who is currently logged in
+				course: app.objectBuffer.course,
+				time: app.objectBuffer.time
+			},
+			success: function() {
+				header_view.showCart();	
+			}
 		});
-		if (item) {
-			app.Carts.remove(item);
-		}
+		
 		console.log("send emails to both client and tutor");
-		header_view.showCart();	
+		
 	},
 	cancelNextWeek: function(event) {
 		//send email
 		console.log("send emails to both client and tutor");
-		//get data
-		console.log(app.objectBuffer);
 	}
 });
 

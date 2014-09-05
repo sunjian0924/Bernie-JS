@@ -24,84 +24,121 @@ app.HeaderView = Backbone.View.extend({
 		this.redraw();
 		var register_view = new app.RegisterView({el: $("#register_container")});
 		//retrieve current user's info
-		var client_info = app.Clients.models[0];
-		var course_taking = client_info.attributes.course_taking;
-		var course_chosen = client_info.attributes.course_chosen.concat(client_info.attributes.course_in_waitinglist);
+		$.get('/register/sunj3', function(data, textStatus) {
+			if (textStatus === 'success') {
+				var courses_taking = [];
+				for (var i = 0, n = data.courses_taking.length; i < n; i++) {
+					courses_taking.push(data.courses_taking[i].courseID);
+				}
+				var courses_in_waitinglist = [];
+				for (var i = 0, n = data.courses_in_waitinglist.length; i < n; i++) {
+					courses_in_waitinglist.push(data.courses_in_waitinglist[i].courseID);
+				}
+				var courses_chosen = [];
+				for (var i = 0, n = data.courses_times_chosen.length; i < n; i++) {
+					courses_chosen.push(data.courses_times_chosen[i].courseID);
+				}
+				var times_available = [];
+				for (var i = 0, n = data.times_available.length; i < n; i++) {
+					times_available.push(data.times_available[i].time);
+				}
 
-		var course_not_chosen = _.difference(course_taking, course_chosen);
-		for (var i = 0, n = course_not_chosen.length; i < n; i++) {
-			$("#availableCourse").append('<option value=' + course_not_chosen[i] + '>' + course_not_chosen[i] + '</option>');
-		}
-		var course_in_waitinglist = client_info.attributes.course_in_waitinglist;
-		for (var i = 0, n = course_in_waitinglist.length; i < n; i++) {
-			$("#chosenCourse").append('<option value=' + course_in_waitinglist[i] + '>' + course_in_waitinglist[i] + '</option>');
-		}
-		var time_available = client_info.attributes.time_available;
-		for (var i = 0, n = time_available.length; i < n; i++) {
-			$("#availableTime").append('<option value=' + time_available[i] + '>' + time_available[i] + '</option>');
-		}
+				var course_not_chosen = _.difference(courses_taking, _.union(courses_in_waitinglist, courses_chosen));
+
+				for (var i = 0, n = course_not_chosen.length; i < n; i++) {
+					$("#availableCourse").append('<option value=' + course_not_chosen[i] + '>' + course_not_chosen[i] + '</option>');
+				}
+				for (var i = 0, n = courses_in_waitinglist.length; i < n; i++) {
+					$("#chosenCourse").append('<option value=' + courses_in_waitinglist[i] + '>' + courses_in_waitinglist[i] + '</option>');
+				}
+				for (var i = 0, n = times_available.length; i < n; i++) {
+					$("#availableTime").append('<option value=' + times_available[i] + '>' + times_available[i] + '</option>');
+				}
+			}
+		});
+		
 	},
 	showShopping: function(event) {
 		this.redraw();
 		var shopping_view = new app.ShoppingView({el: $("#shopping_container")});
-		var shoppings = app.Shoppings.models;
-		for (var i = 0, m = shoppings.length; i < m; i++) {
-			var courses = shoppings[i].attributes.course;
-			for (var j = 0, n = courses.length; j < n; j++) {
-				$("#shopping_table").append('<tr><td class="owner">' + shoppings[i].attributes.owner + '</td><td class="course">' + shoppings[i].attributes.course[j] + '</td><td class="post_time">' + shoppings[i].attributes.post_time[j] + '</td><td class="time"><select name="time" class="time_chosen"><option value="default">select a time</option></select></td><td><button class="button_add_to_cart">Add to Cart</button></td></tr>');	
+		$.get('/shopping', function(data, textStatus) {
+			if (textStatus === 'success') {
+				var times = {};
+				for (var i = 0, n = data.clienttimes.length; i < n; i++) {
+					if (!times[data.clienttimes[i].MUid]) {
+						times[data.clienttimes[i].MUid] = [data.clienttimes[i].time];
+					} else {
+						times[data.clienttimes[i].MUid].push(data.clienttimes[i].time);
+					}
+				}
+				for (var i = 0, n = data.clientcourses.length; i < n; i++) {
+					if (!data.clientcourses[i]['times']) {
+						data.clientcourses[i]['times'] = times[data.clientcourses[i].MUid];
+					}
+				}
+
+				for (var i = 0, m = data.clientcourses.length; i < m; i++) {	
+					$("#shopping_table").append('<tr><td class="owner">' + data.clientcourses[i].MUid + '</td><td class="course">' + data.clientcourses[i].courseID + '</td><td class="post_time">' + data.clientcourses[i].updated_at + '</td><td class="time"><select name="time" class="time_chosen"><option value="default">select a time</option></select></td><td><button class="button_add_to_cart">Add to Cart</button></td></tr>');	
+					var times = data.clientcourses[i].times;
+					for (var j = 0, n = times.length; j < n; j++) {
+						$(".time_chosen").append('<option value=' + times[j] + '>' + times[j] + '</option>');
+					}
+				}
+				$("button", $("#shopping_table")).unbind("click").click(function(e) {
+					e.preventDefault();
+					var me = $(this);
+					app.objectBuffer = {
+						owner: $(".owner", me.parent().parent())[0].innerHTML,
+						course: $(".course", me.parent().parent())[0].innerHTML,
+						post_time: $(".post_time", me.parent().parent())[0].innerHTML,
+						time: $(".time_chosen", me.parent().parent())[0].options[$(".time_chosen", me.parent().parent())[0].selectedIndex].value
+					};
+				});
 			}
-			var times_chosen = shoppings[i].attributes.time_available;
-			for (var k = 0, o = times_chosen.length; k < o; k++) {
-				$(".time_chosen").append('<option value=' + times_chosen[k] + '>' + times_chosen[k] + '</option>');
-			}
-		}
-		$("button", $("#shopping_table")).unbind("click").click(function(e) {
-			e.preventDefault();
-			var me = $(this);
-			app.objectBuffer = {
-				owner: $(".owner", me.parent().parent())[0].innerHTML,
-				course: $(".course", me.parent().parent())[0].innerHTML,
-				post_time: $(".post_time", me.parent().parent())[0].innerHTML,
-				time_available: $(".time_chosen", me.parent().parent())[0].options[$(".time_chosen", me.parent().parent())[0].selectedIndex].value
-			};
 		});
 	},
 	showCart: function(event) {
 		this.redraw();
 		var cart_view = new app.CartView({el: $("#cart_container")});
-		var carts = app.Carts.models;
-		for (var i = 0, n = carts.length; i < n; i++) {
-			$("#cart_table").append('<tr><td class="tutor">' + carts[i].attributes.tutor + '</td><td class="course">' + carts[i].attributes.course + '</td><td class="time">' + carts[i].attributes.time + '</td><td class="cancel"><button class="button_cancel">Cancel</button></td><td class="cancel_next_week"><button class="button_cancel_next_week">Cancel Next Week</button></td></tr>');
-		}
-		$("button", $("#cart_table")).unbind("click").click(function(e) {
-			e.preventDefault();
-			var me = $(this);
-			app.objectBuffer = {
-				tutor: $(".tutor", me.parent().parent())[0].innerHTML,
-				course: $(".course", me.parent().parent())[0].innerHTML,
-				time: $(".time", me.parent().parent())[0].innerHTML
-			};
+		$.get("/cart/sunj3", function(cart, textStatus, jqXHR) {
+			if (textStatus === 'success') {
+				for (var i = 0, n = cart.length; i < n; i++) {
+					$("#cart_table").append('<tr><td class="tutor">' + cart[i].MUid + '</td><td class="course">' + cart[i].courseID + '</td><td class="time">' + cart[i].time + '</td><td class="cancel"><button class="button_cancel">Cancel</button></td><td class="cancel_next_week"><button class="button_cancel_next_week">Cancel Next Week</button></td></tr>');
+				}
+				$("button", $("#cart_table")).unbind("click").click(function(e) {
+					e.preventDefault();
+					var me = $(this);
+					app.objectBuffer = {
+						tutor: $(".tutor", me.parent().parent())[0].innerHTML,
+						course: $(".course", me.parent().parent())[0].innerHTML,
+						time: $(".time", me.parent().parent())[0].innerHTML
+					};
+				});
+			}
 		});
+		
 	},
 	showAdmin: function(event) {
 		this.redraw();
 		var admin_view = new app.AdminView({el: $("#admin_container")});
-		var tutors = app.Tutors.models;
-		for (var i = 0, n = tutors.length; i < n; i++) {
-			var expertises = tutors[i].attributes.expertises;
-			var MUid = tutors[i].attributes.MUid;
-			for (var j = 0, m = expertises.length; j < m; j++) {
-				$("#tutor_list").append('<tr><td class="MUid">' + MUid + '</td><td class="expertise">' + expertises[j] + '</td><td><button class="button">Delete</button></td></tr>');
+		//retrieve data from server
+		$.get("/admin", function(tutors, textStatus, jqXHR) {
+			if (textStatus === 'success') {
+				for (var i = 0, n = tutors.length; i < n; i++) {
+					var expertise = tutors[i].expertise;
+					var MUid = tutors[i].MUid;
+					$("#tutor_list").append('<tr><td class="MUid">' + MUid + '</td><td class="expertise">' + expertise + '</td><td><button class="button">Delete</button></td></tr>');
+				}
+				$("button", $("#tutor_list")).unbind("click").click(function(e) {
+					e.preventDefault();
+					var me = $(this);
+					app.objectBuffer = {
+						MUid: $(".MUid", me.parent().parent())[0].innerHTML,
+						expertise: $(".expertise", me.parent().parent())[0].innerHTML
+					};
+				});
 			}
-		}
-		$("button", $("#tutor_list")).unbind("click").click(function(e) {
-			e.preventDefault();
-			var me = $(this);
-			app.objectBuffer = {
-				MUid: $(".MUid", me.parent().parent())[0].innerHTML,
-				expertise: $(".expertise", me.parent().parent())[0].innerHTML
-			};
-		});	
+		});		
 	},
 	redraw: function() {
 		$("#home_container").remove();
