@@ -71,19 +71,27 @@ app.HeaderView = Backbone.View.extend({
 						times[data.clienttimes[i].MUid].push(data.clienttimes[i].time);
 					}
 				}
+				var MUids = [];
 				for (var i = 0, n = data.clientcourses.length; i < n; i++) {
+					if (MUids.indexOf(data.clientcourses[i].MUid) === -1) {
+						MUids.push(data.clientcourses[i].MUid);
+					}
 					if (!data.clientcourses[i]['times']) {
 						data.clientcourses[i]['times'] = times[data.clientcourses[i].MUid];
 					}
 				}
 
 				for (var i = 0, m = data.clientcourses.length; i < m; i++) {	
-					$("#shopping_table").append('<tr><td class="owner">' + data.clientcourses[i].MUid + '</td><td class="course">' + data.clientcourses[i].courseID + '</td><td class="post_time">' + data.clientcourses[i].updated_at + '</td><td class="time"><select name="time" class="time_chosen"><option value="default">select a time</option></select></td><td><button class="button_add_to_cart">Add to Cart</button></td></tr>');	
-					var times = data.clientcourses[i].times;
-					for (var j = 0, n = times.length; j < n; j++) {
-						$(".time_chosen").append('<option value=' + times[j] + '>' + times[j] + '</option>');
+					$("#shopping_table").append('<tr><td class="owner">' + data.clientcourses[i].MUid + '</td><td class="course">' + data.clientcourses[i].courseID + '</td><td class="post_time">' + data.clientcourses[i].updated_at + '</td><td class="time"><select name="time" class="' + data.clientcourses[i].MUid + '"><option value="default">select a time</option></select></td><td><button class="button_add_to_cart">Add to Cart</button></td></tr>');	
+					
+				}
+			
+				for (var i = 0, m = MUids.length; i < m; i++) {
+					for (var j = 0, n = times[MUids[i]].length; j < n; j++) {
+						$("." + MUids[i]).append('<option value=' + times[MUids[i]][j] + '>' + times[MUids[i]][j] + '</option>');
 					}
 				}
+
 				$("button", $("#shopping_table")).unbind("click").click(function(e) {
 					e.preventDefault();
 					var me = $(this);
@@ -91,7 +99,7 @@ app.HeaderView = Backbone.View.extend({
 						owner: $(".owner", me.parent().parent())[0].innerHTML,
 						course: $(".course", me.parent().parent())[0].innerHTML,
 						post_time: $(".post_time", me.parent().parent())[0].innerHTML,
-						time: $(".time_chosen", me.parent().parent())[0].options[$(".time_chosen", me.parent().parent())[0].selectedIndex].value
+						time: $("." + $(".owner", me.parent().parent())[0].innerHTML, me.parent().parent())[0].options[$("." + $(".owner", me.parent().parent())[0].innerHTML, me.parent().parent())[0].selectedIndex].value
 					};
 				});
 			}

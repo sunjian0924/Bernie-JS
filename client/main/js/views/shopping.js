@@ -11,30 +11,34 @@ app.ShoppingView = Backbone.View.extend({
 		"click .button_add_to_cart": "addToCart"
 	},
 	addToCart: function(event) {
-		if (app.objectBuffer.time === "default") {
-			alert("choose a time!!");
-		} else {
-			//update database
-			$.post('/cart', {
-				MUid: "sunj3",
-				course: app.objectBuffer.course,
-				owner: app.objectBuffer.owner,
-				time: app.objectBuffer.time
-			});
-			$.ajax({
-				url: '/shopping',
-				type: 'delete',
-				data: {
-					owner: app.objectBuffer.owner,
+		//check expertises
+		if (app.cashedData.expertises.indexOf(app.objectBuffer.course) > -1) {
+			if (app.objectBuffer.time === "default") {
+				alert("choose a time!!");
+			} else {
+				//update database
+				$.post('/cart', {
+					MUid: "sunj3",
 					course: app.objectBuffer.course,
+					owner: app.objectBuffer.owner,
 					time: app.objectBuffer.time
-				},
-				success: function() {
-					//update view
-					header_view.showShopping();
-				}
-			});
-			
+				});
+				$.ajax({
+					url: '/shopping',
+					type: 'delete',
+					data: {
+						owner: app.objectBuffer.owner,
+						course: app.objectBuffer.course,
+						time: app.objectBuffer.time
+					},
+					success: function() {
+						//update view
+						header_view.showShopping();
+					}
+				});		
+			}
+		} else {
+			alert("you're not competent!!");
 		}
 	}
 });

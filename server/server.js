@@ -10,7 +10,8 @@ var application_root = __dirname,
 	mysql = require('mysql'),
 	CAS = require('cas'),
 	cookieParser = require('cookie-parser'),
-	session = require('express-session');
+	session = require('express-session'),
+	now = require('../utils/localtime');
 
 //configure cas
 var cas = new CAS({
@@ -50,18 +51,19 @@ app.use(bodyParser.json({type: 'application/vnd.api+json'}));
 app.use(methodOverride());
 app.use(morgan(':remote-addr :method :url :status'));
 //Where to serve static content
-//app.use('/', express.static(path.join(application_root, 'client/auth')));
+//app.use(express.static(path.join(application_root, '../client/auth')));
 
 //cas happends here
-/*app.post('/login', function(req, res) {
+/*app.use('/', function(req, res) {
 	cas.authenticate(req, res, function(err, status, username, extended) {
 		console.log('haha');
 	});
+	res.send('ok');
 	
 });*/
 
-
 app.use(express.static(path.join(application_root, '../client/main')));
+
 
 
 
@@ -69,6 +71,13 @@ app.use(express.static(path.join(application_root, '../client/main')));
 /*
 	REST APIs
 */
+//get all the expertises for a tutor
+app.get('/expertises/:id', function(req, res) {
+	var sql = "select expertise from hiredtutors where MUid=" + mysql.escape(req.params.id);
+	connectionPool.query(sql, function(err, expertises) {
+		res.send(expertises);
+	});
+});
 //get all the hired tutors
 app.get('/admin', function(req, res) {
 	var sql = "select * from hiredtutors";
@@ -101,7 +110,7 @@ app.get('/cart/:id', function(req, res) {
 });
 //add a new item into the cart with MUid of :id
 app.post('/cart', function(req, res) {
-	var sql = "insert into tutors (MUid, customer, time, courseID) values ('" + req.body.MUid + "', '" + req.body.owner + "', '" + req.body.time + "', '" + req.body.course + "')";
+	var sql = "insert into tutors (MUid, customer, time, courseID, updated_at) values ('" + req.body.MUid + "', '" + req.body.owner + "', '" + req.body.time + "', '" + req.body.course + "', '" + now() + "')";
 	connectionPool.query(sql, function(err, result) {
 		res.send(result);
 	}); 
@@ -140,11 +149,11 @@ app.put('/register', function(req, res) {
 	req.body.waitinglist = JSON.parse(req.body.waitinglist);
 	req.body.availableTime = JSON.parse(req.body.availableTime);
 	for (var i = 0, n = req.body.waitinglist.length; i < n; i++) {
-		addCourseSqls.push("insert into clientcourses (MUid, courseID, updated_at) values ('" + req.body.MUid + "', '" + req.body.waitinglist[i] + "', NOW())");
+		addCourseSqls.push("insert into clientcourses (MUid, courseID, updated_at) values ('" + req.body.MUid + "', '" + req.body.waitinglist[i] + "', '" + now() + "')");
 	}
 	var addTimeSqls = [];
 	for (var i = 0, n = req.body.availableTime.length; i < n; i++) {
-		addTimeSqls.push("insert into clienttimes (MUid, time, updated_at) values ('" + req.body.MUid + "', '" + req.body.availableTime[i] + "', NOW())");
+		addTimeSqls.push("insert into clienttimes (MUid, time, updated_at) values ('" + req.body.MUid + "', '" + req.body.availableTime[i] + "', '" + now() + "')");
 	}
 	var sql = sql1 + "; " + sql2;
 	for (var i = 0, n = addCourseSqls.length; i < n; i++) {
@@ -180,7 +189,7 @@ app.delete('/shopping', function(req, res) {
 		res.send(result);
 	});
 });
-//
+
 
 
 app.get('/profile/:id', function(req, res) {
