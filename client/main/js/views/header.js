@@ -23,6 +23,14 @@ app.HeaderView = Backbone.View.extend({
 	showRegister: function(event) {
 		this.redraw();
 		var register_view = new app.RegisterView({el: $("#register_container")});
+		$.get('/times/sunj3/notAvailable', function(data, textStatus) {
+			if (textStatus === 'success') {
+				app.objectBuffer.notAvailable = [];
+				for (var i = 0, n = data.length; i < n; i++) {
+					app.objectBuffer.notAvailable.push(data[i].time);
+				}
+			}
+		});
 		//retrieve current user's info
 		$.get('/register/sunj3', function(data, textStatus) {
 			if (textStatus === 'success') {

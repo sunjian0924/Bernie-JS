@@ -16,28 +16,28 @@ app.RegisterView = Backbone.View.extend({
 	},
 	moveRight: function(event) {
 		$.each($("#availableCourse").val(), function(index, object) {
-      $("#chosenCourse").append('<option value="' + object + '">' + object + '</option>');
-      $("#availableCourse option:selected").remove();
+      		$("#chosenCourse").append('<option value="' + object + '">' + object + '</option>');
+      		$("#availableCourse option:selected").remove();
     });
 	},
 	moveLeft: function(event) {
 		$.each($("#chosenCourse").val(), function(index, object) {
-      $("#availableCourse").append('<option value="' + object + '">' + object + '</option>');
-      $("#chosenCourse option:selected").remove();
+      		$("#availableCourse").append('<option value="' + object + '">' + object + '</option>');
+      		$("#chosenCourse option:selected").remove();
     });
 	},
 	addTime: function(event) {
 		var options = [];
-    $("#availableTime option").each(function() {
-      options.push($(this).val());
-    });
-    $.each($("#Time").val(), function(index, object) {
-      if ($.inArray(object, options) == -1) {
-          $("#availableTime").append('<option value="' + object + '">' + object + '</option>');
-      } else {
-          alert("Time conflict!");
-      }
-    });
+	    $("#availableTime option").each(function() {
+	      options.push($(this).val());
+	    });
+	    $.each($("#Time").val(), function(index, object) {
+	      if ($.inArray(object, options) == -1 && $.inArray(object, app.objectBuffer.notAvailable) == -1) {
+	          $("#availableTime").append('<option value="' + object + '">' + object + '</option>');
+	      } else {
+	          alert("Time conflict!");
+	      }
+	    });
 	},
 	deleteTime: function(event) {
     $("#availableTime option:selected").remove();

@@ -32,7 +32,7 @@ app.use(session({
 var connectionPool = mysql.createPool({
 	host: 'localhost',
 	user: 'root',
-	password: 'wbzas4225069',
+	password: '12345',
 	database: 'Bernie',
 	multipleStatements: true
 });
@@ -71,6 +71,19 @@ app.use(express.static(path.join(application_root, '../client/main')));
 /*
 	REST APIs
 */
+//get all the times clients have chosen
+app.get('/times/:id/notAvailable', function(req, res) {
+	var sql = "select time from tutors where customer=" + mysql.escape(req.params.id);
+	connectionPool.query(sql, function(err, times) {
+		res.send(times);
+	});
+});
+app.get('/times/:id/available', function(req, res) {
+	var sql = "select time from clienttimes where MUid=" + mysql.escape(req.params.id);
+	connectionPool.query(sql, function(err, times) {
+		res.send(times);
+	});
+});
 //get all the expertises for a tutor
 app.get('/expertises/:id', function(req, res) {
 	var sql = "select expertise from hiredtutors where MUid=" + mysql.escape(req.params.id);
@@ -87,7 +100,7 @@ app.get('/admin', function(req, res) {
 });
 //add a new tutor
 app.post('/admin', function(req, res) {
-	var sql = "insert into hiredtutors (MUid, created_at, updated_at, expertise) values ('" + req.body.MUid + "', NOW()" + ", NOW(), '" + req.body.expertise + "')";
+	var sql = "insert into hiredtutors (MUid, updated_at, expertise) values ('" + req.body.MUid + "', '" + now() + "', '" + req.body.expertise + "')";
 	connectionPool.query(sql, function(err, result) {
 		res.send(result);
 	});
