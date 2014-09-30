@@ -9,7 +9,7 @@ var options = {
 var connectionPool = mysql.createPool({
 	host: 'localhost',
 	user: 'root',
-	password: 'wbzas4225069',
+	password: '12345',
 	database: 'Bernie',
 	multipleStatements: true
 });
