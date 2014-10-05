@@ -4,15 +4,33 @@ app.RegisterView = Backbone.View.extend({
 		this.render();
 	},
 	render: function() {
-		var template = _.template($("#register_template").html());
-		this.$el.html(template);
+		if (app.register_type !== 'tutor') {
+			var template = _.template($("#client_register_template").html());
+			this.$el.html(template);
+		} else {
+			var template = _.template($("#tutor_register_template").html());
+			this.$el.html(template);
+		}
 	},
 	events: {
+		"click #client_switch": "clientSwitch",
+		"click #tutor_switch": "tutorSwitch",
 		"click #moveright": "moveRight",
 		"click #moveleft": "moveLeft",
-		"click #addtime": "addTime",
-		"click #deletetime": "deleteTime",
-		"click #register": "register"
+		"click #client_addtime": "clientAddTime",
+		"click #client_deletetime": "clientDeleteTime",
+		"click #tutor_addtime": "tutorAddTime",
+		"click #tutor_deletetime": "tutorDeleteTime",
+		"click #client_register": "clientRegister",
+		"click #tutor_register": "tutorRegister"
+	},
+	clientSwitch: function(event) {
+		app.register_type = "client";
+		header_view.showRegister();
+	},
+	tutorSwitch: function(event) {
+		app.register_type = "tutor";
+		header_view.showRegister();
 	},
 	moveRight: function(event) {
 		$.each($("#availableCourse").val(), function(index, object) {
@@ -26,23 +44,23 @@ app.RegisterView = Backbone.View.extend({
       		$("#chosenCourse option:selected").remove();
     });
 	},
-	addTime: function(event) {
+	clientAddTime: function(event) {
 		var options = [];
-	    $("#availableTime option").each(function() {
+	    $("#client_availableTime option").each(function() {
 	      options.push($(this).val());
 	    });
-	    $.each($("#Time").val(), function(index, object) {
+	    $.each($("#client_Time").val(), function(index, object) {
 	      if ($.inArray(object, options) == -1 && $.inArray(object, app.objectBuffer.notAvailable) == -1) {
-	          $("#availableTime").append('<option value="' + object + '">' + object + '</option>');
+	          $("#client_availableTime").append('<option value="' + object + '">' + object + '</option>');
 	      } else {
 	          alert("Time conflict!");
 	      }
 	    });
 	},
-	deleteTime: function(event) {
-    $("#availableTime option:selected").remove();
+	clientDeleteTime: function(event) {
+    	$("#client_availableTime option:selected").remove();
 	},
-	register: function(event) {
+	clientRegister: function(event) {
 		event.preventDefault();
 		//get data
 		var options1 = $("#chosenCourse")[0].options;
@@ -50,7 +68,7 @@ app.RegisterView = Backbone.View.extend({
 		for (var i = 0, n = options1.length; i < n; i++) {
 			waitinglist.push(options1[i].value);
 		}
-		var options2 = $("#availableTime")[0].options;
+		var options2 = $("#client_availableTime")[0].options;
 		var availableTime = [];
 		for (var i = 0, n = options2.length; i < n; i++) {
 			availableTime.push(options2[i].value);
@@ -67,8 +85,44 @@ app.RegisterView = Backbone.View.extend({
 				//update view
 				header_view.showRegister();
 			}
+		});		
+	},
+	tutorAddTime: function(event) {
+		var options = [];
+	    $("#tutor_availableTime option").each(function() {
+	      options.push($(this).val());
+	    });
+	    $.each($("#tutor_Time").val(), function(index, object) {
+	      if ($.inArray(object, options) == -1 && $.inArray(object, app.objectBuffer.notAvailable) == -1) {
+	          $("#tutor_availableTime").append('<option value="' + object + '">' + object + '</option>');
+	      } else {
+	          alert("Time conflict!");
+	      }
+	    });
+	},
+	tutorDeleteTime: function(event) {
+    	$("#tutor_availableTime option:selected").remove();
+	},
+	tutorRegister: function(event) {
+		event.preventDefault();
+		//get data
+		var options = $("#tutor_availableTime")[0].options;
+		var availableTime = [];
+		for (var i = 0, n = options.length; i < n; i++) {
+			availableTime.push(options[i].value);
+		}
+		$.ajax({
+			url: '/tutor_register',
+			type: 'put',
+			data: {
+				MUid: "sunj3", //the user that is currently logged in
+				availableTime: JSON.stringify(availableTime)
+			},
+			success: function() {
+				//update view
+				header_view.showRegister();
+			}
 		});
-		
 	}
 });
 

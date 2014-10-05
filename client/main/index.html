@@ -5,8 +5,8 @@
 	<input type="button" class="buttonMain" id="home" value="Home" />
 	<input type="button" class="buttonMain" id="profile" value="Profile" />
 	<input type="button" class="buttonMain" id="register" value="Register" />
-	<input type="button" class="buttonMain" id="cart" value="Cart" />
-	<input type="button" class="buttonMain" id="shopping" value="Shopping" />
+	<input type="button" class="buttonMain" id="cart" value="Appointment" />
+	<input type="button" class="buttonMain" id="shopping" value="Avaialble Clients" />
 	<input type="button" class="buttonMain" id="admin" value="Admin" />
 </div>
 
@@ -28,7 +28,11 @@
 
 
 
-<script type="text/template" id="register_template">
+<script type="text/template" id="client_register_template">
+	<button id="client_switch" class="button">Client</button>
+	<button id="tutor_switch" class="button">Tutor</button>
+	<br>
+	<br>
 	<form>
 		<div style="display: inline-block">
 			<select id="availableCourse" multiple size="5">
@@ -52,7 +56,7 @@
 		<br>
 
 	  <div style="display: inline-block">
-			<select id="Time" multiple size="10">
+			<select id="client_Time" multiple size="10">
 			<optgroup style="font-size:9px;text-decoration:none;" label="Available"></optgroup>
 	    <optgroup style="font-size:12px;text-decoration:none;" label="Monday"></optgroup>
 		   	<option value=8-9am,Monday> 8-9am </option>
@@ -87,24 +91,87 @@
 		</div>
 
 		<div style="display: inline-block">
-			<div style="border: 1px solid #000; padding: 3px; cursor: pointer" id="addtime">&gt</div>
+			<div style="border: 1px solid #000; padding: 3px; cursor: pointer" id="client_addtime">&gt</div>
 		</div>
 
 		<div style="display: inline-block">
-			<select id="availableTime" name="chosenCourse[]" multiple size="10">
+			<select id="client_availableTime" name="chosenCourse[]" multiple size="10">
 			<optgroup style="font-size:9px;text-decoration:none;" label="Chosen"></optgroup>
 
 			</select>
 		</div>
 	    
 		<div style="display: inline-block">
-			<div style="border: 1px solid #000; padding: 3px; cursor: pointer" id="deletetime">&gt</div>
+			<div style="border: 1px solid #000; padding: 3px; cursor: pointer" id="client_deletetime">&gt</div>
 		</div>
 
 		<br>
 		<br>
 
-		<input type="submit" id="register" value="Update" class="button" />
+		<input type="submit" id="client_register" value="Update" class="button" />
+	</form>
+</script>
+
+<script type="text/template" id="tutor_register_template">
+	<button id="client_switch" class="button">Client</button>
+	<button id="tutor_switch" class="button">Tutor</button>
+	<br>
+	<br>
+	<form>
+	  <div style="display: inline-block">
+			<select id="tutor_Time" multiple size="10">
+			<optgroup style="font-size:9px;text-decoration:none;" label="Available"></optgroup>
+	    <optgroup style="font-size:12px;text-decoration:none;" label="Monday"></optgroup>
+		   	<option value=8-9am,Monday> 8-9am </option>
+		   	<option value=9-10am,Monday> 9-10am </option>
+		   	<option value=10-11am,Monday> 10-11am </option>
+	      <option value=2-3pm,Monday> 2-3pm </option>
+	      <option value=3-4pm,Monday> 3-4pm </option>
+	    <optgroup style="font-size:12px;text-decoration:none;" label="Tuesday"></optgroup>
+		   	<option value=8-9am,Tuesday> 8-9am </option>
+		   	<option value=9-10am,Tuesday> 9-10am </option>
+		   	<option value=10-11am,Tuesday> 10-11am </option>
+	      <option value=2-3pm,Tuesday> 2-3pm </option>
+	      <option value=3-4pm,Tuesday> 3-4pm </option>
+	    <optgroup style="font-size:12px;text-decoration:none;" label="Wednesday"></optgroup>
+		   	<option value=8-9am,Wednesday> 8-9am </option>
+		   	<option value=9-10am,Wednesday> 9-10am </option>
+		   	<option value=10-11am,Wednesday> 10-11am </option>
+	      <option value=2-3pm,Wednesday> 2-3pm </option>
+	      <option value=3-4pm,Wednesday> 3-4pm </option>
+	    <optgroup style="font-size:12px;text-decoration:none;" label="Thursday"></optgroup>
+		   	<option value=8-9am,Thursday> 8-9am </option>
+		   	<option value=9-10am,Thursday> 9-10am </option>
+		   	<option value=10-11am,Thursday> 10-11am </option>
+	      <option value=2-3pm,Thursday> 2-3pm </option>
+	      <option value=3-4pm,Thursday> 3-4pm </option>
+	    <optgroup style="font-size:12px;text-decoration:none;" label="Friday"></optgroup>
+		   	<option value=8-9am,Friday> 8-9am </option>
+		   	<option value=9-10am,Friday> 9-10am </option>
+		   	<option value=10-11am,Friday> 10-11am </option>
+			
+			</select>
+		</div>
+
+		<div style="display: inline-block">
+			<div style="border: 1px solid #000; padding: 3px; cursor: pointer" id="tutor_addtime">&gt</div>
+		</div>
+
+		<div style="display: inline-block">
+			<select id="tutor_availableTime" name="chosenCourse[]" multiple size="10">
+			<optgroup style="font-size:9px;text-decoration:none;" label="Chosen"></optgroup>
+
+			</select>
+		</div>
+	    
+		<div style="display: inline-block">
+			<div style="border: 1px solid #000; padding: 3px; cursor: pointer" id="tutor_deletetime">&gt</div>
+		</div>
+
+		<br>
+		<br>
+
+		<input type="submit" id="tutor_register" value="Update" class="button" />
 	</form>
 </script>
 
@@ -145,7 +212,11 @@
 
 
 
-<script type="text/template" id="admin_template">
+<script type="text/template" id="admin_add_delete_template">
+	<button id="add_delete_switch" class="button">Add/Delete</button>
+	<button id="matching_switch" class="button">Matching</button>
+	<br>
+	<br>
 	<div style="display: inline-block" class="page-header">
 		<form>
 			<label for="MUid">MUid</label>
@@ -172,6 +243,23 @@
 	    </table>
 	</div>
 
+</script>
+
+<script type="text/template" id="admin_matching_template">
+	<button id="add_delete_switch" class="button">Add/Delete</button>
+	<button id="matching_switch" class="button">Matching</button>
+	<br>
+	<br>
+	<div>
+		<table align="center" id="matching_table">
+			<tr>
+			    <th>owner</th>
+			    <th>course</th>
+			    <th>post time</th>
+			    <th></th>
+			</tr>		  
+		</table>
+	</div>
 </script>
 
 <br>

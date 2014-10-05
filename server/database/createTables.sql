@@ -30,6 +30,13 @@ create table clienttimes (
         updated_at varchar(255) NOT NULL
         );
 
+create table tutortimes (
+        id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        MUid varchar(255) NOT NULL,
+        time varchar(255) NOT NULL,
+        updated_at varchar(255) NOT NULL
+        );
+
 create table clients (
         id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         MUid varchar(255) NOT NULL,

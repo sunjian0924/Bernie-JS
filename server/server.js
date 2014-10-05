@@ -71,15 +71,41 @@ app.use(express.static(path.join(application_root, '../client/main')));
 /*
 	REST APIs
 */
+//match
+app.get('/matchings/:id/:courseID', function(req, res) {
+	var sql = "select hiredtutors.MUid, tutortimes.time from hiredtutors inner join tutortimes on hiredtutors.MUid=tutortimes.MUid where hiredtutors.expertise =" + mysql.escape(req.params.courseID) + "and tutortimes.time IN (select time from clienttimes where MUid=" + mysql.escape(req.params.id) + ")";
+	connectionPool.query(sql, function(err, result) {
+		if (result.length !== 0) {
+			var sql1 = "insert into tutors (MUid, courseID, time, customer, updated_at) values (" + mysql.escape(result[0].MUid) + ", " + mysql.escape(req.params.courseID) + ", " + mysql.escape(result[0].time) + ", " + mysql.escape(req.params.id) + ", " + mysql.escape(now()) + ")"; 
+			var sql2 = "delete from clientcourses where MUid='" + req.params.id + "' and courseID='" + req.params.courseID + "'";
+			var sql3 = "delete from clienttimes where MUid='" + req.params.id + "' and time='" + result[0].time + "'";
+			var sql4 = "delete from tutortimes where MUid='" + result[0].MUid + "' and time='" + result[0].time + "'";
+			var sql = sql1 + "; " + sql2 + "; " + sql3 + "; " + sql4;
+			connectionPool.query(sql, function(err) {
+				res.send(result[0]);
+			});		
+		} else {
+			res.send({fail: 'none'});
+		}
+	});
+
+});
 //get all the times clients have chosen
-app.get('/times/:id/notAvailable', function(req, res) {
+app.get('/clienttimes/:id/notAvailable', function(req, res) {
 	var sql = "select time from tutors where customer=" + mysql.escape(req.params.id);
 	connectionPool.query(sql, function(err, times) {
 		res.send(times);
 	});
 });
-app.get('/times/:id/available', function(req, res) {
+app.get('/clienttimes/:id/available', function(req, res) {
 	var sql = "select time from clienttimes where MUid=" + mysql.escape(req.params.id);
+	connectionPool.query(sql, function(err, times) {
+		res.send(times);
+	});
+});
+
+app.get('/tutortimes/:id/available', function(req, res) {
+	var sql = "select time from tutortimes where MUid=" + mysql.escape(req.params.id);
 	connectionPool.query(sql, function(err, times) {
 		res.send(times);
 	});
@@ -152,7 +178,7 @@ app.get('/register/:id', function(req, res) {
 		res.send(data);
 	});
 });
-//update register
+//update register for clients
 app.put('/register', function(req, res) {
 	//delete all 
 	//add all
@@ -171,6 +197,24 @@ app.put('/register', function(req, res) {
 	var sql = sql1 + "; " + sql2;
 	for (var i = 0, n = addCourseSqls.length; i < n; i++) {
 		sql += "; " + addCourseSqls[i];
+	}
+	for (var i = 0, n = addTimeSqls.length; i < n; i++) {
+		sql += "; " + addTimeSqls[i];
+	}
+	connectionPool.query(sql, function(err, result) {
+		res.send(result);
+	});
+});
+
+//update register for tutors
+app.put('/tutor_register', function(req, res) {
+	//delete all 
+	//add all
+	var sql = "delete from tutortimes where MUid='" + req.body.MUid + "'";
+	req.body.availableTime = JSON.parse(req.body.availableTime);
+	var addTimeSqls = [];
+	for (var i = 0, n = req.body.availableTime.length; i < n; i++) {
+		addTimeSqls.push("insert into tutortimes (MUid, time, updated_at) values ('" + req.body.MUid + "', '" + req.body.availableTime[i] + "', '" + now() + "')");
 	}
 	for (var i = 0, n = addTimeSqls.length; i < n; i++) {
 		sql += "; " + addTimeSqls[i];
