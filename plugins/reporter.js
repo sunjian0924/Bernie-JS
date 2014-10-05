@@ -1,4 +1,6 @@
 var mysql = require('mysql');
+var fs = require('fs');
+var now = require('../utils/localtime');
 var prettyjson = require('prettyjson');
 var options = {
 	keysColor: 'yellow',
