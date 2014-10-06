@@ -48,19 +48,21 @@ app.AdminView = Backbone.View.extend({
 	},
 	deleteAdmin: function(event) {
 		//get data
-		$.ajax({
-			url: '/admin',
-			type: 'delete',
-			data: {
-				MUid: app.objectBuffer.MUid,
-				expertise: app.objectBuffer.expertise
-			},
-			success: function() {
-				//update view
-				header_view.showAdmin();	
-			}
-		});
-		
+		var response = confirm("Are you sure you want to delete this tutor?");
+		if (response) {
+			$.ajax({
+				url: '/admin',
+				type: 'delete',
+				data: {
+					MUid: app.objectBuffer.MUid,
+					expertise: app.objectBuffer.expertise
+				},
+				success: function() {
+					//update view
+					header_view.showAdmin();	
+				}
+			});
+		}
 	},
 	match: function(event) {
 		$.ajax({
