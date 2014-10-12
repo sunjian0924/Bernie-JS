@@ -71,12 +71,19 @@ app.use(express.static(path.join(application_root, '../client/main')));
 /*
 	REST APIs
 */
+//appointment
+app.get('/appointments', function(req, res) {
+	var sql = "select * from appointments";
+	connectionPool.query(sql, function(err, result) {
+		res.send(result);
+	});
+});
 //match
 app.get('/matchings/:id/:courseID', function(req, res) {
 	var sql = "select hiredtutors.MUid, tutortimes.time from hiredtutors inner join tutortimes on hiredtutors.MUid=tutortimes.MUid where hiredtutors.expertise =" + mysql.escape(req.params.courseID) + "and tutortimes.time IN (select time from clienttimes where MUid=" + mysql.escape(req.params.id) + ")";
 	connectionPool.query(sql, function(err, result) {
 		if (result.length !== 0) {
-			var sql1 = "insert into tutors (MUid, courseID, time, customer, updated_at) values (" + mysql.escape(result[0].MUid) + ", " + mysql.escape(req.params.courseID) + ", " + mysql.escape(result[0].time) + ", " + mysql.escape(req.params.id) + ", " + mysql.escape(now()) + ")"; 
+			var sql1 = "insert into appointments (MUid, courseID, time, customer, updated_at) values (" + mysql.escape(result[0].MUid) + ", " + mysql.escape(req.params.courseID) + ", " + mysql.escape(result[0].time) + ", " + mysql.escape(req.params.id) + ", " + mysql.escape(now()) + ")"; 
 			var sql2 = "delete from clientcourses where MUid='" + req.params.id + "' and courseID='" + req.params.courseID + "'";
 			var sql3 = "delete from clienttimes where MUid='" + req.params.id + "' and time='" + result[0].time + "'";
 			var sql4 = "delete from tutortimes where MUid='" + result[0].MUid + "' and time='" + result[0].time + "'";
@@ -92,7 +99,7 @@ app.get('/matchings/:id/:courseID', function(req, res) {
 });
 //get all the times clients have chosen
 app.get('/clienttimes/:id/notAvailable', function(req, res) {
-	var sql = "select time from tutors where customer=" + mysql.escape(req.params.id);
+	var sql = "select time from appointments where customer=" + mysql.escape(req.params.id);
 	connectionPool.query(sql, function(err, times) {
 		res.send(times);
 	});
@@ -142,21 +149,21 @@ app.delete('/admin', function(req, res) {
 
 //get cart info with MUid of :id
 app.get('/cart/:id', function(req, res) {
-	var sql = "select * from tutors where MUid=" + mysql.escape(req.params.id);
+	var sql = "select * from appointments where MUid=" + mysql.escape(req.params.id);
 	connectionPool.query(sql, function(err, rows) {
 		res.send(rows);
 	});
 });
 //add a new item into the cart with MUid of :id
 app.post('/cart', function(req, res) {
-	var sql = "insert into tutors (MUid, customer, time, courseID, updated_at) values ('" + req.body.MUid + "', '" + req.body.owner + "', '" + req.body.time + "', '" + req.body.course + "', '" + now() + "')";
+	var sql = "insert into appointments (MUid, customer, time, courseID, updated_at) values ('" + req.body.MUid + "', '" + req.body.owner + "', '" + req.body.time + "', '" + req.body.course + "', '" + now() + "')";
 	connectionPool.query(sql, function(err, result) {
 		res.send(result);
 	}); 
 });
 //delete a new item from cart
 app.delete('/cart', function(req, res) {
-	var sql = "delete from tutors where MUid='" + req.body.tutor + "' and customer='" + req.body.customer + "' and time='" + req.body.time + "' and courseID='" + req.body.course + "'";
+	var sql = "delete from appointments where MUid='" + req.body.tutor + "' and customer='" + req.body.customer + "' and time='" + req.body.time + "' and courseID='" + req.body.course + "'";
 	connectionPool.query(sql, function(err, result) {
 		res.send(result);
 	});
@@ -166,7 +173,7 @@ app.get('/register/:id', function(req, res) {
 	var sql1 = "select courseID from academics where MUid=" + mysql.escape(req.params.id);
 	var sql2 = "select time from clienttimes where MUid=" + mysql.escape(req.params.id);
 	var sql3 = "select courseID from clientcourses where MUid=" + mysql.escape(req.params.id);
-	var sql4 = "select courseID, time from tutors where customer=" + mysql.escape(req.params.id);
+	var sql4 = "select courseID, time from appointments where customer=" + mysql.escape(req.params.id);
 	var sql = sql1 + "; " + sql2 + "; " + sql3 + "; " + sql4;
 	connectionPool.query(sql, function(err, results) {	
 		var data = {

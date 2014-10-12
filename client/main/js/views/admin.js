@@ -4,12 +4,18 @@ app.AdminView = Backbone.View.extend({
 		this.render();		
 	},
 	render: function() {
-		if (app.admin_type !== "matching") {
-			var template = _.template($("#admin_add_delete_template").html());
-			this.$el.html(template);
-		} else {
-			var template = _.template($("#admin_matching_template").html());
-			this.$el.html(template);
+		switch (app.admin_type) {
+			case "matching":
+				var template = _.template($("#admin_matching_template").html());
+				this.$el.html(template);
+				break;
+			case "appointment":
+				var template = _.template($("#admin_appointment_template").html());
+				this.$el.html(template);
+				break;
+			default:
+				var template = _.template($("#admin_add_delete_template").html());
+				this.$el.html(template);
 		}
 	},
 	events: {
@@ -17,6 +23,7 @@ app.AdminView = Backbone.View.extend({
 		"click .button_delete": "deleteAdmin",
 		"click #add_delete_switch": "addDelSwitch",
 		"click #matching_switch": "matchingSwitch",
+		"click #appointment_switch": "appointmentSwitch",
 		"click .button_match": "match"
 	},
 	addDelSwitch: function(event) {
@@ -25,6 +32,10 @@ app.AdminView = Backbone.View.extend({
 	},
 	matchingSwitch: function(event) {
 		app.admin_type = "matching";
+		header_view.showAdmin();
+	},
+	appointmentSwitch: function(event) {
+		app.admin_type = "appointment";
 		header_view.showAdmin();
 	},
 	addAdmin: function(event) {

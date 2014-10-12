@@ -198,13 +198,14 @@
 
 <script type="text/template" id="cart_template">
 	<div>    
-			<table class="cart" align="center" id="cart_table">
+		<table class="cart" align="center" id="cart_table">
 	    	<tr>
 		      <th>Tutor</th>
 		      <th>Course</th>
 		      <th>Time</th>
 		      <th></th>
 		      <th></th>
+		    </tr>
 	    </table>
 	</div>
 </script>
@@ -215,6 +216,7 @@
 <script type="text/template" id="admin_add_delete_template">
 	<button id="add_delete_switch" class="button">Add/Delete</button>
 	<button id="matching_switch" class="button">Matching</button>
+	<button id="appointment_switch" class="button">Appointments</button>
 	<br>
 	<br>
 	<div style="display: inline-block" class="page-header">
@@ -248,6 +250,7 @@
 <script type="text/template" id="admin_matching_template">
 	<button id="add_delete_switch" class="button">Add/Delete</button>
 	<button id="matching_switch" class="button">Matching</button>
+	<button id="appointment_switch" class="button">Appointments</button>
 	<br>
 	<br>
 	<div>
@@ -259,6 +262,25 @@
 			    <th></th>
 			</tr>		  
 		</table>
+	</div>
+</script>
+
+<script type="text/template" id="admin_appointment_template">
+	<button id="add_delete_switch" class="button">Add/Delete</button>
+	<button id="matching_switch" class="button">Matching</button>
+	<button id="appointment_switch" class="button">Appointments</button>
+	<br>
+	<br>
+	<div>    
+		<table class="cart" align="center" id="admin_appointment_table">
+	    	<tr>
+		      <th>Tutor</th>
+		      <th>Client</th>
+		      <th>Course</th>
+		      <th>Time</th>
+		      <th>Starting time</th>
+		    </tr>
+	    </table>
 	</div>
 </script>
 

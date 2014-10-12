@@ -37,14 +37,6 @@ create table tutortimes (
         updated_at varchar(255) NOT NULL
         );
 
-create table clients (
-        id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        MUid varchar(255) NOT NULL,
-        courseID varchar(255) NOT NULL,
-        time varchar(255) NOT NULL,
-        updated_at varchar(255) NOT NULL
-        );
-
 create table hiredtutors (
         id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         MUid varchar(255) NOT NULL,
@@ -53,7 +45,7 @@ create table hiredtutors (
         );
 
 
-create table tutors (
+create table appointments (
         id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
         MUid varchar(255) NOT NULL,
         courseID varchar(255) NOT NULL,
