@@ -54,7 +54,7 @@ app.use(morgan(':remote-addr :method :url :status'));
 //app.use(express.static(path.join(application_root, '../client/auth')));
 
 //cas happends here
-app.use('/', function(req, res) {
+/*app.use('/', function(req, res) {
       cas.authenticate(req, res, function(err, status, username, extended) {
         if (err) {
           // Handle the error
@@ -65,9 +65,9 @@ app.use('/', function(req, res) {
           res.send({status: status, username: username, attributes: extended.attributes});
         }
       });   
-});
+});*/
 
-//app.use(express.static(path.join(application_root, '../client/main')));
+app.use(express.static(path.join(application_root, '../client/main')));
 
 
 
