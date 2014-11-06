@@ -57,7 +57,7 @@ app.use(morgan(':remote-addr :method :url :status'));
 app.use('/', function(req, res) {
 	console.log("haah");
 	cas.authenticate(req, res, function(err, status, username, extended) {
-		res.send(username);
+		console.log(username);
 	});
 });
 
