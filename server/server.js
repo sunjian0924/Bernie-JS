@@ -58,6 +58,7 @@ app.use('/', function(req, res) {
       cas.authenticate(req, res, function(err, status, username, extended) {
         if (err) {
           // Handle the error
+          console.log(err);
           res.send({error: err});
         } else {
           // Log the user in 
