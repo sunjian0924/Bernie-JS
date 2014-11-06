@@ -24,9 +24,9 @@ var app = express();
 
 //session management middleware
 app.use(cookieParser());
-app.use(session({
-	secret: 'dfasdfa'
-}));
+app.use(session({secret: 'fadsfdsf', 
+                 saveUninitialized: true,
+                 resave: true}));
 
 //Connect to database
 var connectionPool = mysql.createPool({
