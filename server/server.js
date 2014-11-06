@@ -16,7 +16,7 @@ var application_root = __dirname,
 //configure cas
 var cas = new CAS({
 	base_url: "https://muidp.miamioh.edu/cas",
-	service: 'http://127.0.0.1:3000',
+	service: 'http://rlcltmsd01.mcs.miamioh.edu:3000/',
 });
 
 //Create server
@@ -54,15 +54,15 @@ app.use(morgan(':remote-addr :method :url :status'));
 //app.use(express.static(path.join(application_root, '../client/auth')));
 
 //cas happends here
-/*app.use('/', function(req, res) {
+app.use('/', function(req, res) {
 	cas.authenticate(req, res, function(err, status, username, extended) {
 		console.log('haha');
 	});
 	res.send('ok');
 	
-});*/
+});
 
-app.use(express.static(path.join(application_root, '../client/main')));
+//app.use(express.static(path.join(application_root, '../client/main')));
 
 
 
