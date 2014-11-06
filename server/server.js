@@ -30,7 +30,7 @@ app.use(session({
 
 //Connect to database
 var connectionPool = mysql.createPool({
-	host: 'localhost',
+	host: '172.17.0.210',
 	user: 'root',
 	password: '12345',
 	database: 'Bernie',
