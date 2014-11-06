@@ -55,6 +55,7 @@ app.use(morgan(':remote-addr :method :url :status'));
 
 //cas happends here
 app.use('/', function(req, res) {
+	console.log('haha');
 	var ticket = req.param('ticket');
 	if (ticket) {
 		cas.validate(ticket, function(err, status, username) {
