@@ -55,6 +55,7 @@ app.use(morgan(':remote-addr :method :url :status'));
 
 //cas happends here
 app.use('/', function(req, res) {
+	console.log("haah");
 	cas.authenticate(req, res, function(err, status, username, extended) {
 		res.send(username);
 	});
