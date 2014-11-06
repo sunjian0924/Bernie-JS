@@ -55,11 +55,20 @@ app.use(morgan(':remote-addr :method :url :status'));
 
 //cas happends here
 app.use('/', function(req, res) {
-	console.log("haah");
-	cas.authenticate(req, res, function(err, status, user, extended) {
-		console.log(user);
-	});
-	console.log("nice");
+	var ticket = req.param('ticket');
+	if (ticket) {
+		cas.validate(ticket, function(err, status, username) {
+	      	if (err) {
+	        	// Handle the error
+	        	res.send({error: err});
+	      	} else {
+		  // Log the user in
+	        	res.send({status: status, username: username});
+	      	}
+	    	});
+	 } else {
+	 	res.redirect('/');
+	 }
 });
 
 //app.use(express.static(path.join(application_root, '../client/main')));
