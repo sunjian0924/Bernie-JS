@@ -77,7 +77,7 @@ app.use('/', function(req, res) {
 	REST APIs
 */
 //appointment
-app.get('/appointments', function(req, res) {
+app.get('/appointments', session, function(req, res) {
 	var sql = "select * from appointments";
 	connectionPool.query(sql, function(err, result) {
 		res.send(result);
