@@ -18,7 +18,7 @@ app.ShoppingView = Backbone.View.extend({
 			} else {
 				//update database
 				$.post('/cart', {
-					MUid: "sunj3",
+					MUid: app.cashedData.user,
 					course: app.objectBuffer.course,
 					owner: app.objectBuffer.owner,
 					time: app.objectBuffer.time
