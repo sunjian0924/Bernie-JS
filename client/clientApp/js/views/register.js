@@ -29,8 +29,12 @@ app.RegisterView = Backbone.View.extend({
 		header_view.showRegister();
 	},
 	tutorSwitch: function(event) {
-		app.register_type = "tutor";
-		header_view.showRegister();
+		if (app.cashedData.usertype === 'tutor') {
+			app.register_type = "tutor";
+			header_view.showRegister();
+		} else {
+			alert("Sorry, you are not a tutor!");
+		}
 	},
 	moveRight: function(event) {
 		$.each($("#availableCourse").val(), function(index, object) {
