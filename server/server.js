@@ -55,12 +55,12 @@ app.use(morgan(':remote-addr :method :url :status'));
 
 //cas happends here
 app.use('/', function(req, res) {
-      console.log(req.ticket);
+      console.log(req.param('ticket'));
       cas.authenticate(req, res, function(err, status, username, extended) {
       	
         if (err) {
           // Handle the error
-          console.log(err);
+          console.log('error');
           res.send({error: err});
         } else {
           // Log the user in 
