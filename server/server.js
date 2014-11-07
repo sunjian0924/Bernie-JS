@@ -16,7 +16,7 @@ var application_root = __dirname,
 
 //configure cas
 cas.configure({
-	casHost: "https://muidp.miamioh.edu",
+	casHost: "muidp.miamioh.edu",
 	casPath: "/cas",
 	ssl: true,
 	port: 443,
