@@ -69,7 +69,17 @@ app.get('/logout', cas.logout);
 */
 //get identity
 app.get('/whoami', function(req, res) {
-	res.send(req.session.user);
+	var data = {
+		username: req.session.user,
+		usertype: 'non-tutor'
+	};
+	var sql = "select * from hiredtutors where MUid=" + mysql.escape(req.session.user);
+	connectionPool.query(sql, function(err, result) {
+		if (result.length !== 0) {
+			data.usertype = 'tutor';
+		}
+		res.send(data);
+	});	
 });
 //appointment
 app.get('/appointments', function(req, res) {

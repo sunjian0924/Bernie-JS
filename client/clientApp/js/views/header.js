@@ -79,51 +79,55 @@ app.HeaderView = Backbone.View.extend({
 		}
 	},
 	showShopping: function(event) {
-		this.redraw();
-		var shopping_view = new app.ShoppingView({el: $("#shopping_container")});
-		$.get('/shopping', function(data, textStatus) {
-			if (textStatus === 'success') {
-				var times = {};
-				for (var i = 0, n = data.clienttimes.length; i < n; i++) {
-					if (!times[data.clienttimes[i].MUid]) {
-						times[data.clienttimes[i].MUid] = [data.clienttimes[i].time];
-					} else {
-						times[data.clienttimes[i].MUid].push(data.clienttimes[i].time);
+		if (app.cashedData.type !== 'tutor') {
+			this.redraw();
+			var shopping_view = new app.ShoppingView({el: $("#shopping_container")});
+			$.get('/shopping', function(data, textStatus) {
+				if (textStatus === 'success') {
+					var times = {};
+					for (var i = 0, n = data.clienttimes.length; i < n; i++) {
+						if (!times[data.clienttimes[i].MUid]) {
+							times[data.clienttimes[i].MUid] = [data.clienttimes[i].time];
+						} else {
+							times[data.clienttimes[i].MUid].push(data.clienttimes[i].time);
+						}
 					}
-				}
-				var MUids = [];
-				for (var i = 0, n = data.clientcourses.length; i < n; i++) {
-					if (MUids.indexOf(data.clientcourses[i].MUid) === -1) {
-						MUids.push(data.clientcourses[i].MUid);
+					var MUids = [];
+					for (var i = 0, n = data.clientcourses.length; i < n; i++) {
+						if (MUids.indexOf(data.clientcourses[i].MUid) === -1) {
+							MUids.push(data.clientcourses[i].MUid);
+						}
+						if (!data.clientcourses[i]['times']) {
+							data.clientcourses[i]['times'] = times[data.clientcourses[i].MUid];
+						}
 					}
-					if (!data.clientcourses[i]['times']) {
-						data.clientcourses[i]['times'] = times[data.clientcourses[i].MUid];
-					}
-				}
 
-				for (var i = 0, m = data.clientcourses.length; i < m; i++) {	
-					$("#shopping_table").append('<tr><td class="owner">' + data.clientcourses[i].MUid + '</td><td class="course">' + data.clientcourses[i].courseID + '</td><td class="post_time">' + data.clientcourses[i].updated_at + '</td><td class="time"><select name="time" class="' + data.clientcourses[i].MUid + '"><option value="default">select a time</option></select></td><td><button class="button_add_to_cart">Add to Cart</button></td></tr>');	
-					
-				}
-			
-				for (var i = 0, m = MUids.length; i < m; i++) {
-					for (var j = 0, n = times[MUids[i]].length; j < n; j++) {
-						$("." + MUids[i]).append('<option value=' + times[MUids[i]][j] + '>' + times[MUids[i]][j] + '</option>');
+					for (var i = 0, m = data.clientcourses.length; i < m; i++) {	
+						$("#shopping_table").append('<tr><td class="owner">' + data.clientcourses[i].MUid + '</td><td class="course">' + data.clientcourses[i].courseID + '</td><td class="post_time">' + data.clientcourses[i].updated_at + '</td><td class="time"><select name="time" class="' + data.clientcourses[i].MUid + '"><option value="default">select a time</option></select></td><td><button class="button_add_to_cart">Add to Cart</button></td></tr>');	
+						
 					}
-				}
+				
+					for (var i = 0, m = MUids.length; i < m; i++) {
+						for (var j = 0, n = times[MUids[i]].length; j < n; j++) {
+							$("." + MUids[i]).append('<option value=' + times[MUids[i]][j] + '>' + times[MUids[i]][j] + '</option>');
+						}
+					}
 
-				$("button", $("#shopping_table")).unbind("click").click(function(e) {
-					e.preventDefault();
-					var me = $(this);
-					app.objectBuffer = {
-						owner: $(".owner", me.parent().parent())[0].innerHTML,
-						course: $(".course", me.parent().parent())[0].innerHTML,
-						post_time: $(".post_time", me.parent().parent())[0].innerHTML,
-						time: $("." + $(".owner", me.parent().parent())[0].innerHTML, me.parent().parent())[0].options[$("." + $(".owner", me.parent().parent())[0].innerHTML, me.parent().parent())[0].selectedIndex].value
-					};
-				});
-			}
-		});
+					$("button", $("#shopping_table")).unbind("click").click(function(e) {
+						e.preventDefault();
+						var me = $(this);
+						app.objectBuffer = {
+							owner: $(".owner", me.parent().parent())[0].innerHTML,
+							course: $(".course", me.parent().parent())[0].innerHTML,
+							post_time: $(".post_time", me.parent().parent())[0].innerHTML,
+							time: $("." + $(".owner", me.parent().parent())[0].innerHTML, me.parent().parent())[0].options[$("." + $(".owner", me.parent().parent())[0].innerHTML, me.parent().parent())[0].selectedIndex].value
+						};
+					});
+				}
+			});
+		} else {
+			alert("Sorry, you are not a tutor!");
+		}
 	},
 	showCart: function(event) {
 		this.redraw();
