@@ -7,10 +7,9 @@ app.HeaderView = Backbone.View.extend({
 	events: {
 		"click #home" : "showHome",
 		"click #profile": "showProfile",
-		"click #register": "showRegister",
-		"click #shopping": "showShopping",
-		"click #cart": "showCart",
-		"click #admin": "showAdmin"
+		"click #admin_add_delete": "showAdminAddDel",
+		"click #admin_match": "showAdminMatch",
+		"click #admin_appointments": "showAdminAppointments"
 	},
 	showHome: function(event) {
 		this.redraw();
@@ -20,68 +19,30 @@ app.HeaderView = Backbone.View.extend({
 		this.redraw();
 		var profile_view = new app.ProfileView({el: $("#profile_container")});
 	},
-	showRegister: function(event) {
+	showAdminAddDel: function(event) {
 		this.redraw();
-		var register_view = new app.RegisterView({el: $("#register_container")});
-		if (app.register_type !== 'tutor') {
-			$.get('/clienttimes/' + app.cashedData.user + '/notAvailable', function(data, textStatus) {
-				if (textStatus === 'success') {
-					app.objectBuffer.notAvailable = [];
-					for (var i = 0, n = data.length; i < n; i++) {
-						app.objectBuffer.notAvailable.push(data[i].time);
-					}
+		var admin_add_delete_view = new app.AdminAddDeleteView({el: $("#admin_add_delete_container")});
+		$.get("/admin", function(tutors, textStatus) {
+			if (textStatus === 'success') {
+				for (var i = 0, n = tutors.length; i < n; i++) {
+					var expertise = tutors[i].expertise;
+					var MUid = tutors[i].MUid;
+					$("#tutor_list").append('<tr><td class="MUid">' + MUid + '</td><td class="expertise">' + expertise + '</td><td><button class="button_delete">Delete</button></td></tr>');
 				}
-			});
-			//retrieve current user's info
-			$.get('/register/' + app.cashedData.user, function(data, textStatus) {
-				if (textStatus === 'success') {
-					var courses_taking = [];
-					for (var i = 0, n = data.courses_taking.length; i < n; i++) {
-						courses_taking.push(data.courses_taking[i].courseID);
-					}
-					var courses_in_waitinglist = [];
-					for (var i = 0, n = data.courses_in_waitinglist.length; i < n; i++) {
-						courses_in_waitinglist.push(data.courses_in_waitinglist[i].courseID);
-					}
-					var courses_chosen = [];
-					for (var i = 0, n = data.courses_times_chosen.length; i < n; i++) {
-						courses_chosen.push(data.courses_times_chosen[i].courseID);
-					}
-					var times_available = [];
-					for (var i = 0, n = data.times_available.length; i < n; i++) {
-						times_available.push(data.times_available[i].time);
-					}
-
-					var course_not_chosen = _.difference(courses_taking, _.union(courses_in_waitinglist, courses_chosen));
-
-					for (var i = 0, n = course_not_chosen.length; i < n; i++) {
-						$("#availableCourse").append('<option value=' + course_not_chosen[i] + '>' + course_not_chosen[i] + '</option>');
-					}
-					for (var i = 0, n = courses_in_waitinglist.length; i < n; i++) {
-						$("#chosenCourse").append('<option value=' + courses_in_waitinglist[i] + '>' + courses_in_waitinglist[i] + '</option>');
-					}
-					for (var i = 0, n = times_available.length; i < n; i++) {
-						$("#client_availableTime").append('<option value=' + times_available[i] + '>' + times_available[i] + '</option>');
-					}
-				}
-			});
-		} else {
-			$.get("/tutortimes/" + app.cashedData.user + "/available", function(data, textStatus) {
-				if (textStatus === 'success') {
-					var times_available = [];
-					for (var i = 0, n = data.length; i < n; i++) {
-						times_available.push(data[i].time);
-					}
-					for (var i = 0, n = times_available.length; i < n; i++) {
-						$("#tutor_availableTime").append('<option value=' + times_available[i] + '>' + times_available[i] + '</option>');
-					}
-				}
-			});
-		}
+				$("button", $("#tutor_list")).unbind("click").click(function(e) {
+					e.preventDefault();
+					var me = $(this);
+					app.objectBuffer = {
+						MUid: $(".MUid", me.parent().parent())[0].innerHTML,
+						expertise: $(".expertise", me.parent().parent())[0].innerHTML
+					};
+				});
+			}
+		});
 	},
-	showShopping: function(event) {
+	showAdminMatch: function(event) {
 		this.redraw();
-		var shopping_view = new app.ShoppingView({el: $("#shopping_container")});
+		var admin_match_view = new app.AdminMatchView({el: $("#admin_match_container")});
 		$.get('/shopping', function(data, textStatus) {
 			if (textStatus === 'success') {
 				var times = {};
@@ -101,138 +62,44 @@ app.HeaderView = Backbone.View.extend({
 						data.clientcourses[i]['times'] = times[data.clientcourses[i].MUid];
 					}
 				}
-
 				for (var i = 0, m = data.clientcourses.length; i < m; i++) {	
-					$("#shopping_table").append('<tr><td class="owner">' + data.clientcourses[i].MUid + '</td><td class="course">' + data.clientcourses[i].courseID + '</td><td class="post_time">' + data.clientcourses[i].updated_at + '</td><td class="time"><select name="time" class="' + data.clientcourses[i].MUid + '"><option value="default">select a time</option></select></td><td><button class="button_add_to_cart">Add to Cart</button></td></tr>');	
-					
-				}
-			
-				for (var i = 0, m = MUids.length; i < m; i++) {
-					for (var j = 0, n = times[MUids[i]].length; j < n; j++) {
-						$("." + MUids[i]).append('<option value=' + times[MUids[i]][j] + '>' + times[MUids[i]][j] + '</option>');
-					}
+					$("#matching_table").append('<tr><td class="owner">' + data.clientcourses[i].MUid + '</td><td class="course">' + data.clientcourses[i].courseID + '</td><td class="post_time">' + data.clientcourses[i].updated_at + '</td><td><button class="button_match">match</button></td></tr>');			
 				}
 
-				$("button", $("#shopping_table")).unbind("click").click(function(e) {
+				$("button", $("#matching_table")).unbind("click").click(function(e) {
 					e.preventDefault();
 					var me = $(this);
 					app.objectBuffer = {
 						owner: $(".owner", me.parent().parent())[0].innerHTML,
 						course: $(".course", me.parent().parent())[0].innerHTML,
-						post_time: $(".post_time", me.parent().parent())[0].innerHTML,
-						time: $("." + $(".owner", me.parent().parent())[0].innerHTML, me.parent().parent())[0].options[$("." + $(".owner", me.parent().parent())[0].innerHTML, me.parent().parent())[0].selectedIndex].value
+						post_time: $(".post_time", me.parent().parent())[0].innerHTML
 					};
 				});
 			}
 		});
 	},
-	showCart: function(event) {
+	showAdminAppointments: function(event) {
 		this.redraw();
-		var cart_view = new app.CartView({el: $("#cart_container")});
-		$.get("/cart/" + app.cashedData.user, function(cart, textStatus, jqXHR) {
+		var admin_appointmets_view = new app.AdminAppointmentsView({el: $("#admin_appointments_container")});
+		$.get("/appointments", function(appointments, textStatus) {
 			if (textStatus === 'success') {
-				for (var i = 0, n = cart.length; i < n; i++) {
-					$("#cart_table").append('<tr><td class="tutor">' + cart[i].MUid + '</td><td class="course">' + cart[i].courseID + '</td><td class="time">' + cart[i].time + '</td><td class="cancel"><button class="button_cancel">Cancel Series</button></td><td class="cancel_next_week"><button class="button_cancel_next_week">Cancel Next Week</button></td></tr>');
+				for (var i = 0, n = appointments.length; i < n; i++) {
+					$("#admin_appointment_table").append('<tr><td class="tutor">' + appointments[i].MUid + '</td><td class="client">' + appointments[i].customer + '</td><td class="course">' + appointments[i].courseID + '</td><td class="time">' + appointments[i].time + '</td><td>' + appointments[i].updated_at + '</td></tr>');
 				}
-				$("button", $("#cart_table")).unbind("click").click(function(e) {
-					e.preventDefault();
-					var me = $(this);
-					app.objectBuffer = {
-						tutor: $(".tutor", me.parent().parent())[0].innerHTML,
-						course: $(".course", me.parent().parent())[0].innerHTML,
-						time: $(".time", me.parent().parent())[0].innerHTML
-					};
-				});
 			}
 		});
-		
-	},
-	showAdmin: function(event) {
-		this.redraw();
-		var admin_view = new app.AdminView({el: $("#admin_container")});
-		//retrieve data from server
-		switch (app.admin_type) {
-			case  "matching":
-				$.get('/shopping', function(data, textStatus) {
-					if (textStatus === 'success') {
-						var times = {};
-						for (var i = 0, n = data.clienttimes.length; i < n; i++) {
-							if (!times[data.clienttimes[i].MUid]) {
-								times[data.clienttimes[i].MUid] = [data.clienttimes[i].time];
-							} else {
-								times[data.clienttimes[i].MUid].push(data.clienttimes[i].time);
-							}
-						}
-						var MUids = [];
-						for (var i = 0, n = data.clientcourses.length; i < n; i++) {
-							if (MUids.indexOf(data.clientcourses[i].MUid) === -1) {
-								MUids.push(data.clientcourses[i].MUid);
-							}
-							if (!data.clientcourses[i]['times']) {
-								data.clientcourses[i]['times'] = times[data.clientcourses[i].MUid];
-							}
-						}
-
-						for (var i = 0, m = data.clientcourses.length; i < m; i++) {	
-							$("#matching_table").append('<tr><td class="owner">' + data.clientcourses[i].MUid + '</td><td class="course">' + data.clientcourses[i].courseID + '</td><td class="post_time">' + data.clientcourses[i].updated_at + '</td><td><button class="button_match">match</button></td></tr>');	
-							
-						}
-
-						$("button", $("#matching_table")).unbind("click").click(function(e) {
-							e.preventDefault();
-							var me = $(this);
-							app.objectBuffer = {
-								owner: $(".owner", me.parent().parent())[0].innerHTML,
-								course: $(".course", me.parent().parent())[0].innerHTML,
-								post_time: $(".post_time", me.parent().parent())[0].innerHTML
-							};
-						});
-					}
-				});
-				break;
-			case "appointment":
-				$.get("/appointments", function(appointments, textStatus) {
-					if (textStatus === 'success') {
-						for (var i = 0, n = appointments.length; i < n; i++) {
-							$("#admin_appointment_table").append('<tr><td class="tutor">' + appointments[i].MUid + '</td><td class="client">' + appointments[i].customer + '</td><td class="course">' + appointments[i].courseID + '</td><td class="time">' + appointments[i].time + '</td><td>' + appointments[i].updated_at + '</td></tr>');
-						}
-					}
-				});
-				break;
-			default:
-				$.get("/admin", function(tutors, textStatus) {
-					if (textStatus === 'success') {
-						for (var i = 0, n = tutors.length; i < n; i++) {
-							var expertise = tutors[i].expertise;
-							var MUid = tutors[i].MUid;
-							$("#tutor_list").append('<tr><td class="MUid">' + MUid + '</td><td class="expertise">' + expertise + '</td><td><button class="button_delete">Delete</button></td></tr>');
-						}
-						$("button", $("#tutor_list")).unbind("click").click(function(e) {
-							e.preventDefault();
-							var me = $(this);
-							app.objectBuffer = {
-								MUid: $(".MUid", me.parent().parent())[0].innerHTML,
-								expertise: $(".expertise", me.parent().parent())[0].innerHTML
-							};
-						});
-					}
-				});
-				break;
-		}
 	},
 	redraw: function() {
 		$("#home_container").remove();
 		$("#profile_container").remove();
-		$("#register_container").remove();	
-		$("#cart_container").remove();
-		$("#shopping_container").remove();
-		$("#admin_container").remove();
+		$("#admin_add_delete_container").remove();	
+		$("#admin_match_container").remove();
+		$("#admin_appointments_container").remove();
 		$("#containers").append('<div id="home_container"></div>');
 		$("#containers").append('<div id="profile_container"></div>');
-		$("#containers").append('<div id="register_container"></div>');	
-		$("#containers").append('<div id="cart_container"></div>');
-		$("#containers").append('<div id="shopping_container"></div>');
-		$("#containers").append('<div id="admin_container"></div>');
+		$("#containers").append('<div id="admin_add_delete_container"></div>');	
+		$("#containers").append('<div id="admin_match_container"></div>');
+		$("#containers").append('<div id="admin_appointments_container"></div>');
 	}
 });
 
