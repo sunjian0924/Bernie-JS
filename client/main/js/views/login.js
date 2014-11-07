@@ -15,5 +15,5 @@ app.LoginView = Backbone.View.extend({
 	}
 });
 
-var login_view = new app.LoginView();
+var login_view = new app.LoginView({el: $("#login_container")});
 
