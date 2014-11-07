@@ -61,7 +61,7 @@ app.use(morgan(':remote-addr :method :url :status'));
 //cas happends here
 //app.use('/', cas.bouncer, express.static(path.join(application_root, '../client/clientApp')));
 app.use('/', cas.bouncer, function(req, res) {
-	res.sendFile(path.join(application_root, '../client/clientApp'));
+	res.sendFile(path.join(application_root, '../client/clientApp/index.html'));
 });
 app.get('/logout', cas.logout);
 	
