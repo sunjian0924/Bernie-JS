@@ -20,7 +20,7 @@ app.CartView = Backbone.View.extend({
 				type: 'delete',
 				data: {
 					tutor: app.objectBuffer.tutor,
-					customer: "sunj3", //the user who is currently logged in
+					customer: app.cashedData.user, //the user who is currently logged in
 					course: app.objectBuffer.course,
 					time: app.objectBuffer.time
 				},
