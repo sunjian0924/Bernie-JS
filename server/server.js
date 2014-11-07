@@ -16,7 +16,7 @@ var application_root = __dirname,
 //configure cas
 var cas = new CAS({
 	base_url: "https://muidp.miamioh.edu/cas",
-	service: 'http://rlcltmsd01.mcs.miamioh.edu/',
+	service: 'http://rlcltmsd01.mcs.miamioh.edu:3000/',
 });
 
 //Create server
@@ -271,7 +271,7 @@ app.get('/profile/:id', function(req, res) {
 /*
 	Start server
 */
-var port = 80;
+var port = 3000;
 
 app.listen(port, function() {
 	console.log('server is running on port 3000');
