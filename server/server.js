@@ -8,17 +8,26 @@ var application_root = __dirname,
 	methodOverride = require('method-override'),
 	morgan = require('morgan'),
 	mysql = require('mysql'),
-	CAS = require('cas'),
+	CAS = require('grand_master_cas'),
 	cookieParser = require('cookie-parser'),
 	session = require('express-session'),
 	now = require('../utils/localtime');
 
+
 //configure cas
-var cas = new CAS({
+cas.configure({
+	casHost: "https://muidp.miamioh.edu",
+	casPath: "/cas",
+	ssl: true,
+	port: 443,
+	service: "http://rlcltmsd01.mcs.miamioh.edu:3000/",
+	sessionName: "user"
+});
+/*var cas = new CAS({
 	base_url: "https://muidp.miamioh.edu/cas",
 	service: 'http://rlcltmsd01.mcs.miamioh.edu:3000/',
 	version: 2.0
-});
+});*/
 
 //Create server
 var app = express();
@@ -55,8 +64,11 @@ app.use(morgan(':remote-addr :method :url :status'));
 //app.use(express.static(path.join(application_root, '../client/auth')));
 
 //cas happends here
+app.get('/', cas.blocker, function(req, res) {
+	res.send("heelo");
+});
 	
-app.use('/', function(req, res) {
+/*app.use('/', function(req, res) {
       cas.authenticate(req, res, function(err, status, username, extended) {
       	
         if (err) {
@@ -68,7 +80,7 @@ app.use('/', function(req, res) {
           res.send({status: status, username: username, attributes: extended.attributes});
         }
       });   
-});
+});*/
 
 //app.use(express.static(path.join(application_root, '../client/main')));
 
