@@ -7,7 +7,6 @@
 	<input type="button" class="buttonMain" id="register" value="Register" />
 	<input type="button" class="buttonMain" id="cart" value="Appointment" />
 	<input type="button" class="buttonMain" id="shopping" value="Avaialble Clients" />
-	<input type="button" class="buttonMain" id="admin" value="Admin" />
 </div>
 
 
@@ -17,15 +16,9 @@
 </script>
 
 
-
-
 <script type="text/template" id="profile_template">
 	Profile
 </script>
-
-
-
-
 
 
 <script type="text/template" id="client_register_template">
@@ -211,79 +204,6 @@
 </script>
 
 
-
-
-<script type="text/template" id="admin_add_delete_template">
-	<button id="add_delete_switch" class="button">Add/Delete</button>
-	<button id="matching_switch" class="button">Matching</button>
-	<button id="appointment_switch" class="button">Appointments</button>
-	<br>
-	<br>
-	<div style="display: inline-block" class="page-header">
-		<form>
-			<label for="MUid">MUid</label>
-			<input type="text" id="MUid" class="text"><br>
-
-			<label for="expertise">expertise</label>
-			<input type="text" id="expertise" class="text"><br>
-			<br>
-			<br>
-			<input type="submit" value="Add" id="add_admin" class="button">
-		</form>
-	</div>
-
-
-	<div>
-	    <table class="admin_tutors" align="center" id="tutor_list">
-	    	<thead>
-		    	<tr>
-			      <th>MUid</th>
-			      <th>expertise</th>
-			      <th></th>
-		    	</tr>
-		    </thead>
-	    </table>
-	</div>
-
-</script>
-
-<script type="text/template" id="admin_matching_template">
-	<button id="add_delete_switch" class="button">Add/Delete</button>
-	<button id="matching_switch" class="button">Matching</button>
-	<button id="appointment_switch" class="button">Appointments</button>
-	<br>
-	<br>
-	<div>
-		<table align="center" id="matching_table">
-			<tr>
-			    <th>owner</th>
-			    <th>course</th>
-			    <th>post time</th>
-			    <th></th>
-			</tr>		  
-		</table>
-	</div>
-</script>
-
-<script type="text/template" id="admin_appointment_template">
-	<button id="add_delete_switch" class="button">Add/Delete</button>
-	<button id="matching_switch" class="button">Matching</button>
-	<button id="appointment_switch" class="button">Appointments</button>
-	<br>
-	<br>
-	<div>    
-		<table class="cart" align="center" id="admin_appointment_table">
-	    	<tr>
-		      <th>Tutor</th>
-		      <th>Client</th>
-		      <th>Course</th>
-		      <th>Time</th>
-		      <th>Starting time</th>
-		    </tr>
-	    </table>
-	</div>
-</script>
-
 <script type="text/template" id="logout_template">
 	<a href='logout' id="logout">logout</a>
 </script>
@@ -297,11 +217,7 @@
 	<div id="register_container"></div>
 	<div id="cart_container"></div>
 	<div id="shopping_container"></div>
-	<div id="admin_container"></div>
 </div>
-
-
-
 
 
 <script src="js/lib/jquery.min.js"></script>
@@ -314,7 +230,6 @@
 <script src="js/views/register.js"></script>
 <script src="js/views/shopping.js"></script>
 <script src="js/views/cart.js"></script>
-<script src="js/views/admin.js"></script>
 <script src="js/views/logout.js"></script>
 
 
