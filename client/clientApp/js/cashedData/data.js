@@ -8,7 +8,7 @@ app.cashedData = {
 $.get('/whoami', function(data, textStatus) {
 	if (textStatus === "success") {
 		app.cashedData.user = data.username;
-		app.cahsedData.usertype = data.usertype;
+		app.cashedData.usertype = data.usertype;
 		$.get('/expertises/' + app.cashedData.user, function(data, textStatus) {
 			if (textStatus === "success") {
 				for (var i = 0, n = data.length; i < n; i++) {
