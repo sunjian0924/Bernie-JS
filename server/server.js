@@ -13,7 +13,7 @@ var application_root = __dirname,
 	session = require('express-session'),
 	now = require('../utils/localtime');
 
-var port = process.argv[2];
+var PORT = process.argv[2];
 
 //configure cas
 cas.configure({
@@ -21,7 +21,7 @@ cas.configure({
 	casPath: "/cas",
 	ssl: true,
 	port: 443,
-	service: "http://rlcltmsd01.mcs.miamioh.edu:" + port + "/",
+	service: "http://rlcltmsd01.mcs.miamioh.edu:" + PORT + "/",
 	sessionName: "user"
 });
 
@@ -307,8 +307,8 @@ app.get('/profile/:id', function(req, res) {
 */
 
 
-app.listen(port, function() {
-	console.log('server is running on port ' + port);
+app.listen(PORT, function() {
+	console.log('server is running on port ' + PORT);
 });
 
 
