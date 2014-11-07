@@ -66,29 +66,15 @@ app.use(morgan(':remote-addr :method :url :status'));
 //cas happends here
 app.use('/', cas.bouncer, express.static(path.join(application_root, '../client/main')));
 	
-/*app.use('/', function(req, res) {
-      cas.authenticate(req, res, function(err, status, username, extended) {
-      	
-        if (err) {
-          // Handle the error
-          console.log(err);
-          res.send({error: err});
-        } else {
-          // Log the user in 
-          res.send({status: status, username: username, attributes: extended.attributes});
-        }
-      });   
-});*/
-
-//app.use(express.static(path.join(application_root, '../client/main')));
-
-
-
 
 
 /*
 	REST APIs
 */
+//get identity
+app.get('/whoami', function(req, res) {
+	res.send(session.user);
+});
 //appointment
 app.get('/appointments', function(req, res) {
 	var sql = "select * from appointments";
