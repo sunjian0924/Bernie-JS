@@ -24,7 +24,7 @@ app.HeaderView = Backbone.View.extend({
 		this.redraw();
 		var register_view = new app.RegisterView({el: $("#register_container")});
 		if (app.register_type !== 'tutor') {
-			$.get('/clienttimes/sunj3/notAvailable', function(data, textStatus) {
+			$.get('/clienttimes/' + app.cashedData.user + '/notAvailable', function(data, textStatus) {
 				if (textStatus === 'success') {
 					app.objectBuffer.notAvailable = [];
 					for (var i = 0, n = data.length; i < n; i++) {
@@ -33,7 +33,7 @@ app.HeaderView = Backbone.View.extend({
 				}
 			});
 			//retrieve current user's info
-			$.get('/register/sunj3', function(data, textStatus) {
+			$.get('/register/' + app.cashedData.user, function(data, textStatus) {
 				if (textStatus === 'success') {
 					var courses_taking = [];
 					for (var i = 0, n = data.courses_taking.length; i < n; i++) {
@@ -66,7 +66,7 @@ app.HeaderView = Backbone.View.extend({
 				}
 			});
 		} else {
-			$.get("/tutortimes/sunj3/available", function(data, textStatus) {
+			$.get("/tutortimes/" + app.cashedData.user + "/available", function(data, textStatus) {
 				if (textStatus === 'success') {
 					var times_available = [];
 					for (var i = 0, n = data.length; i < n; i++) {
@@ -129,7 +129,7 @@ app.HeaderView = Backbone.View.extend({
 	showCart: function(event) {
 		this.redraw();
 		var cart_view = new app.CartView({el: $("#cart_container")});
-		$.get("/cart/sunj3", function(cart, textStatus, jqXHR) {
+		$.get("/cart/" + app.cashedData.user, function(cart, textStatus, jqXHR) {
 			if (textStatus === 'success') {
 				for (var i = 0, n = cart.length; i < n; i++) {
 					$("#cart_table").append('<tr><td class="tutor">' + cart[i].MUid + '</td><td class="course">' + cart[i].courseID + '</td><td class="time">' + cart[i].time + '</td><td class="cancel"><button class="button_cancel">Cancel Series</button></td><td class="cancel_next_week"><button class="button_cancel_next_week">Cancel Next Week</button></td></tr>');
