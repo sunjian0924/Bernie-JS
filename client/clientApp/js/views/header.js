@@ -79,7 +79,7 @@ app.HeaderView = Backbone.View.extend({
 		}
 	},
 	showShopping: function(event) {
-		if (app.cashedData.type !== 'tutor') {
+		if (app.cashedData.usertype !== 'tutor') {
 			this.redraw();
 			var shopping_view = new app.ShoppingView({el: $("#shopping_container")});
 			$.get('/shopping', function(data, textStatus) {
