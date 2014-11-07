@@ -65,6 +65,7 @@ app.use(morgan(':remote-addr :method :url :status'));
 
 //cas happends here
 app.use('/', cas.bouncer, express.static(path.join(application_root, '../client/main')));
+app.get('/logout', cas.logout);
 	
 
 
