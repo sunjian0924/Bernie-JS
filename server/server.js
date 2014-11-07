@@ -16,7 +16,7 @@ var application_root = __dirname,
 //configure cas
 var cas = new CAS({
 	base_url: "https://muidp.miamioh.edu/cas",
-	service: 'http://rlcltmsd01.mcs.miamioh.edu:3000/',
+	service: 'http://rlcltmsd01.mcs.miamioh.edu/',
 });
 
 //Create server
