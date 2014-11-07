@@ -304,10 +304,10 @@ app.get('/profile/:id', function(req, res) {
 /*
 	Start server
 */
-var port = 3000;
+var port = process.argv[2];
 
 app.listen(port, function() {
-	console.log('server is running on port 3000');
+	console.log('server is running on port ' + port);
 });
 
 
