@@ -108,30 +108,46 @@ app.get('/matchings/:id/:courseID', function(req, res) {
 });
 //get all the times clients have chosen
 app.get('/clienttimes/:id/notAvailable', function(req, res) {
-	var sql = "select time from appointments where customer=" + mysql.escape(req.params.id);
-	connectionPool.query(sql, function(err, times) {
-		res.send(times);
-	});
+	if (req.params.id === req.session.user) {
+		var sql = "select time from appointments where customer=" + mysql.escape(req.params.id);
+		connectionPool.query(sql, function(err, times) {
+			res.send(times);
+		});
+	} else {
+		res.send({fail: 'No permission!'});
+	}
 });
 app.get('/clienttimes/:id/available', function(req, res) {
-	var sql = "select time from clienttimes where MUid=" + mysql.escape(req.params.id);
-	connectionPool.query(sql, function(err, times) {
-		res.send(times);
-	});
+	if (req.params.id === req.session.user) {
+		var sql = "select time from clienttimes where MUid=" + mysql.escape(req.params.id);
+		connectionPool.query(sql, function(err, times) {
+			res.send(times);
+		});
+	} else {
+		res.send({fail: 'No permission!'});
+	}
 });
 
 app.get('/tutortimes/:id/available', function(req, res) {
-	var sql = "select time from tutortimes where MUid=" + mysql.escape(req.params.id);
-	connectionPool.query(sql, function(err, times) {
-		res.send(times);
-	});
+	if (req.params.id === req.session.user) {
+		var sql = "select time from tutortimes where MUid=" + mysql.escape(req.params.id);
+		connectionPool.query(sql, function(err, times) {
+			res.send(times);
+		});
+	} else {
+		res.send({fail: 'No permission!'});
+	}
 });
 //get all the expertises for a tutor
 app.get('/expertises/:id', function(req, res) {
-	var sql = "select expertise from hiredtutors where MUid=" + mysql.escape(req.params.id);
-	connectionPool.query(sql, function(err, expertises) {
-		res.send(expertises);
-	});
+	if (req.params.id === req.session.user) {
+		var sql = "select expertise from hiredtutors where MUid=" + mysql.escape(req.params.id);
+		connectionPool.query(sql, function(err, expertises) {
+			res.send(expertises);
+		});
+	} else {
+		res.send({fail: 'No permission!'});
+	}
 });
 //get all the hired tutors
 app.get('/admin', function(req, res) {
@@ -158,10 +174,14 @@ app.delete('/admin', function(req, res) {
 
 //get cart info with MUid of :id
 app.get('/cart/:id', function(req, res) {
-	var sql = "select * from appointments where MUid=" + mysql.escape(req.params.id);
-	connectionPool.query(sql, function(err, rows) {
-		res.send(rows);
-	});
+	if (req.params.id === req.session.user) {
+		var sql = "select * from appointments where MUid=" + mysql.escape(req.params.id);
+		connectionPool.query(sql, function(err, rows) {
+			res.send(rows);
+		});
+	} else {
+		res.send({fail: 'No permission!'});
+	}
 });
 //add a new item into the cart with MUid of :id
 app.post('/cart', function(req, res) {
@@ -179,20 +199,24 @@ app.delete('/cart', function(req, res) {
 });
 
 app.get('/register/:id', function(req, res) {
-	var sql1 = "select courseID from academics where MUid=" + mysql.escape(req.params.id);
-	var sql2 = "select time from clienttimes where MUid=" + mysql.escape(req.params.id);
-	var sql3 = "select courseID from clientcourses where MUid=" + mysql.escape(req.params.id);
-	var sql4 = "select courseID, time from appointments where customer=" + mysql.escape(req.params.id);
-	var sql = sql1 + "; " + sql2 + "; " + sql3 + "; " + sql4;
-	connectionPool.query(sql, function(err, results) {	
-		var data = {
-			courses_taking: results[0],
-			times_available: results[1],
-			courses_in_waitinglist: results[2],
-			courses_times_chosen: results[3]
-		};
-		res.send(data);
-	});
+	if (req.params.id === req.session.user) {
+		var sql1 = "select courseID from academics where MUid=" + mysql.escape(req.params.id);
+		var sql2 = "select time from clienttimes where MUid=" + mysql.escape(req.params.id);
+		var sql3 = "select courseID from clientcourses where MUid=" + mysql.escape(req.params.id);
+		var sql4 = "select courseID, time from appointments where customer=" + mysql.escape(req.params.id);
+		var sql = sql1 + "; " + sql2 + "; " + sql3 + "; " + sql4;
+		connectionPool.query(sql, function(err, results) {	
+			var data = {
+				courses_taking: results[0],
+				times_available: results[1],
+				courses_in_waitinglist: results[2],
+				courses_times_chosen: results[3]
+			};
+			res.send(data);
+		});
+	} else {
+		res.send({fail: 'No permission!'});
+	}
 });
 //update register for clients
 app.put('/register', function(req, res) {
