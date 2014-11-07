@@ -11,7 +11,9 @@ app.LoginView = Backbone.View.extend({
 		"click #logout": "logout"
 	},
 	logout: function(event) {
-		$.get('/logout', function(){});
+		$.get('/logout', function(data) {
+			console.log(data);
+		});
 	}
 });
 
