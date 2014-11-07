@@ -64,7 +64,7 @@ app.use(morgan(':remote-addr :method :url :status'));
 //app.use(express.static(path.join(application_root, '../client/auth')));
 
 //cas happends here
-app.get('/', cas.blocker, function(req, res) {
+app.get('/', cas.bouncer, function(req, res) {
 	res.send("heelo");
 });
 	
