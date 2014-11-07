@@ -56,6 +56,7 @@ app.use(morgan(':remote-addr :method :url :status'));
 //cas happends here
 app.use('/', function(req, res) {
       cas.authenticate(req, res, function(err, status, username, extended) {
+      	console.log(req.ticket);
         if (err) {
           // Handle the error
           console.log(err);
