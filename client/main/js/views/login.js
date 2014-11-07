@@ -12,6 +12,6 @@ app.LoginView = Backbone.View.extend({
 });
 
 var login_view = new app.LoginView({el: $("#login_container")});
-$("#whologgedin").append("<p>sunj3</p>");
+$("#whologgedin").append("<p>" + app.cashedData.user + "</p>");
 
 
