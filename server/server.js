@@ -84,21 +84,26 @@ app.get('/appointments', function(req, res) {
 });
 //match
 app.get('/matchings/:id/:courseID', function(req, res) {
-	var sql = "select hiredtutors.MUid, tutortimes.time from hiredtutors inner join tutortimes on hiredtutors.MUid=tutortimes.MUid where hiredtutors.expertise =" + mysql.escape(req.params.courseID) + "and tutortimes.time IN (select time from clienttimes where MUid=" + mysql.escape(req.params.id) + ")";
-	connectionPool.query(sql, function(err, result) {
-		if (result.length !== 0) {
-			var sql1 = "insert into appointments (MUid, courseID, time, customer, updated_at) values (" + mysql.escape(result[0].MUid) + ", " + mysql.escape(req.params.courseID) + ", " + mysql.escape(result[0].time) + ", " + mysql.escape(req.params.id) + ", " + mysql.escape(now()) + ")"; 
-			var sql2 = "delete from clientcourses where MUid='" + req.params.id + "' and courseID='" + req.params.courseID + "'";
-			var sql3 = "delete from clienttimes where MUid='" + req.params.id + "' and time='" + result[0].time + "'";
-			var sql4 = "delete from tutortimes where MUid='" + result[0].MUid + "' and time='" + result[0].time + "'";
-			var sql = sql1 + "; " + sql2 + "; " + sql3 + "; " + sql4;
-			connectionPool.query(sql, function(err) {
-				res.send(result[0]);
-			});		
-		} else {
-			res.send({fail: 'none'});
-		}
-	});
+	//check id agianst req.session.user
+	if (req.params.id === req.session.user) {
+		var sql = "select hiredtutors.MUid, tutortimes.time from hiredtutors inner join tutortimes on hiredtutors.MUid=tutortimes.MUid where hiredtutors.expertise =" + mysql.escape(req.params.courseID) + "and tutortimes.time IN (select time from clienttimes where MUid=" + mysql.escape(req.params.id) + ")";
+		connectionPool.query(sql, function(err, result) {
+			if (result.length !== 0) {
+				var sql1 = "insert into appointments (MUid, courseID, time, customer, updated_at) values (" + mysql.escape(result[0].MUid) + ", " + mysql.escape(req.params.courseID) + ", " + mysql.escape(result[0].time) + ", " + mysql.escape(req.params.id) + ", " + mysql.escape(now()) + ")"; 
+				var sql2 = "delete from clientcourses where MUid='" + req.params.id + "' and courseID='" + req.params.courseID + "'";
+				var sql3 = "delete from clienttimes where MUid='" + req.params.id + "' and time='" + result[0].time + "'";
+				var sql4 = "delete from tutortimes where MUid='" + result[0].MUid + "' and time='" + result[0].time + "'";
+				var sql = sql1 + "; " + sql2 + "; " + sql3 + "; " + sql4;
+				connectionPool.query(sql, function(err) {
+					res.send(result[0]);
+				});		
+			} else {
+				res.send({fail: 'none'});
+			}
+		});
+	} else {
+		res.send({fail: 'No permission!'});
+	}
 
 });
 //get all the times clients have chosen
