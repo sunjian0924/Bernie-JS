@@ -8,14 +8,9 @@ app.LoginView = Backbone.View.extend({
 		this.$el.html(template);
 	},
 	events: {
-		"click #logout": "logout"
 	},
-	logout: function(event) {
-		$.get('/logout', function(data) {
-			console.log(data);
-		});
-	}
 });
 
 var login_view = new app.LoginView({el: $("#login_container")});
+$("#whologgedin").append(app.cashedData.user)
 
