@@ -73,7 +73,7 @@ app.use('/', cas.bouncer, express.static(path.join(application_root, '../client/
 */
 //get identity
 app.get('/whoami', function(req, res) {
-	res.send(session.user);
+	res.send(session);
 });
 //appointment
 app.get('/appointments', function(req, res) {
