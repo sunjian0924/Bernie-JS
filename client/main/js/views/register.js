@@ -77,7 +77,7 @@ app.RegisterView = Backbone.View.extend({
 			url: '/register',
 			type: 'put',
 			data: {
-				MUid: "sunj3", //the user that is currently logged in
+				MUid: app.cashedData.user, //the user that is currently logged in
 				waitinglist: JSON.stringify(waitinglist),
 				availableTime: JSON.stringify(availableTime)
 			},
@@ -115,7 +115,7 @@ app.RegisterView = Backbone.View.extend({
 			url: '/tutor_register',
 			type: 'put',
 			data: {
-				MUid: "sunj3", //the user that is currently logged in
+				MUid: app.cashedData.user, //the user that is currently logged in
 				availableTime: JSON.stringify(availableTime)
 			},
 			success: function() {
