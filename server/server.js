@@ -59,7 +59,7 @@ app.use(morgan(':remote-addr :method :url :status'));
 //app.use(express.static(path.join(application_root, '../client/auth')));
 
 //cas happends here
-app.use('/', cas.bouncer, express.static(path.join(application_root, '../client/client')));
+app.use('/', cas.bouncer, express.static(path.join(application_root, '../client/clientApp')));
 app.get('/logout', cas.logout);
 	
 
