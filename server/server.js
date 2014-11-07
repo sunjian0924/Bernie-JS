@@ -8,33 +8,26 @@ var application_root = __dirname,
 	methodOverride = require('method-override'),
 	morgan = require('morgan'),
 	mysql = require('mysql'),
-	CAS = require('grand_master_cas'),
+	CAS = require('cas'),
 	cookieParser = require('cookie-parser'),
 	session = require('express-session'),
 	now = require('../utils/localtime');
 
 //configure cas
-cas.configure({
-	casHost: "https://muidp.miamioh.edu",
-	casPath: "/cas",
-	ssl: true,
-	port: 443,
-	service: "http://rlcltmsd01.mcs.miamioh.edu:3000",
-	sessionName: "user"
-});
-/*var cas = new CAS({
+var cas = new CAS({
 	base_url: "https://muidp.miamioh.edu/cas",
-	service: 'http://127.0.0.1:3000',
-});*/
+	service: 'http://rlcltmsd01.mcs.miamioh.edu:3000/',
+	version: 2.0
+});
 
 //Create server
 var app = express();
 
 //session management middleware
 app.use(cookieParser());
-app.use(session({
-	secret: 'dfasdfa'
-}));
+app.use(session({secret: 'fadsfdsf', 
+                 saveUninitialized: true,
+                 resave: true}));
 
 //Connect to database
 var connectionPool = mysql.createPool({
@@ -62,8 +55,19 @@ app.use(morgan(':remote-addr :method :url :status'));
 //app.use(express.static(path.join(application_root, '../client/auth')));
 
 //cas happends here
-app.get('/', cas.blocker, function(req, res) {
 	
+app.use('/', function(req, res) {
+      cas.authenticate(req, res, function(err, status, username, extended) {
+      	
+        if (err) {
+          // Handle the error
+          console.log(err);
+          res.send({error: err});
+        } else {
+          // Log the user in 
+          res.send({status: status, username: username, attributes: extended.attributes});
+        }
+      });   
 });
 
 //app.use(express.static(path.join(application_root, '../client/main')));
