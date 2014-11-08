@@ -9,7 +9,7 @@ app.HeaderView = Backbone.View.extend({
 		"click #profile": "showProfile",
 		"click #register": "showRegister",
 		"click #shopping": "showShopping",
-		"click #cart": "showCart",
+		"click #appointments": "showAppointments",
 	},
 	showHome: function(event) {
 		this.redraw();
@@ -129,15 +129,18 @@ app.HeaderView = Backbone.View.extend({
 			alert("Sorry, you are not a tutor!");
 		}
 	},
-	showCart: function(event) {
+	showAppointments: function(event) {
 		this.redraw();
-		var cart_view = new app.CartView({el: $("#cart_container")});
-		$.get("/cart/" + app.cashedData.user, function(cart, textStatus, jqXHR) {
+		var appointments_view = new app.AppointmentsView({el: $("#appointments_container")});
+		$.get("/appointments/" + app.cashedData.user, function(appointments, textStatus, jqXHR) {
 			if (textStatus === 'success') {
-				for (var i = 0, n = cart.length; i < n; i++) {
-					$("#cart_table").append('<tr><td class="tutor">' + cart[i].MUid + '</td><td class="course">' + cart[i].courseID + '</td><td class="time">' + cart[i].time + '</td><td class="cancel"><button class="button_cancel">Cancel Series</button></td><td class="cancel_next_week"><button class="button_cancel_next_week">Cancel Next Week</button></td></tr>');
+				for (var i = 0, n = appointments.tutorAppointments.length; i < n; i++) {
+					$("#tutor_appointments_table").append('<tr><td class="tutor">' + appointments.tutorAppointments[i].MUid + '</td><td class="course">' + appointments.tutorAppointments[i].courseID + '</td><td class="time">' + appointments.tutorAppointments[i].time + '</td><td class="cancel"><button class="button_cancel">Cancel Series</button></td><td class="cancel_next_week"><button class="button_cancel_next_week">Cancel Next Week</button></td></tr>');
 				}
-				$("button", $("#cart_table")).unbind("click").click(function(e) {
+				for (var i = 0, n = appointments.clientAppointments.length; i < n; i++) {
+					$("#client_appointments_table").append('<tr><td class="client">' + appointments.clientAppointments[i].customer + '</td><td class="course">' + appointments.clientAppointments[i].courseID + '</td><td class="time">' + appointments.clientAppointments[i].time + '</td><td class="cancel"><button class="button_cancel">Cancel Series</button></td><td class="cancel_next_week"><button class="button_cancel_next_week">Cancel Next Week</button></td></tr>');
+				}
+				$("button", $("#tutor_appointments_table")).unbind("click").click(function(e) {
 					e.preventDefault();
 					var me = $(this);
 					app.objectBuffer = {
@@ -146,20 +149,28 @@ app.HeaderView = Backbone.View.extend({
 						time: $(".time", me.parent().parent())[0].innerHTML
 					};
 				});
+				$("button", $("#client_appointments_table")).unbind("click").click(function(e) {
+					e.preventDefault();
+					var me = $(this);
+					app.objectBuffer = {
+						tutor: $(".client", me.parent().parent())[0].innerHTML,
+						course: $(".course", me.parent().parent())[0].innerHTML,
+						time: $(".time", me.parent().parent())[0].innerHTML
+					};
+				});
 			}
-		});
-		
+		});	
 	},
 	redraw: function() {
 		$("#home_container").remove();
 		$("#profile_container").remove();
 		$("#register_container").remove();	
-		$("#cart_container").remove();
+		$("#appointments_container").remove();
 		$("#shopping_container").remove();
 		$("#containers").append('<div id="home_container"></div>');
 		$("#containers").append('<div id="profile_container"></div>');
 		$("#containers").append('<div id="register_container"></div>');	
-		$("#containers").append('<div id="cart_container"></div>');
+		$("#containers").append('<div id="appointments_container"></div>');
 		$("#containers").append('<div id="shopping_container"></div>');
 	}
 });

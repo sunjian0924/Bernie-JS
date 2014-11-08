@@ -178,27 +178,32 @@ app.delete('/admin', function(req, res) {
 		res.send(result);
 	});
 });
-
-//get cart info with MUid of :id
-app.get('/cart/:id', function(req, res) {
+//get appointments info
+app.get('/appointments/:id', function(req, res) {
 	if (req.params.id === req.session.user) {
-		var sql = "select * from appointments where MUid=" + mysql.escape(req.params.id);
-		connectionPool.query(sql, function(err, rows) {
-			res.send(rows);
+		var sql1 = "select * from appointments where MUid=" + mysql.escape(req.params.id);
+		var sql2 = "select * from appointments where customer=" + mysql.escape(req.params.id);
+		var sql = sql1 + "; " + sql2;
+		connectionPool.query(sql, function(err, results) {
+			var data = {
+				tutorAppointments: results[0];
+				clientAppointments: results[1];
+			};
+			res.send(data);
 		});
 	} else {
 		res.send({fail: 'No permission!'});
 	}
 });
 //add a new item into the cart with MUid of :id
-app.post('/cart', function(req, res) {
+app.post('/appointment', function(req, res) {
 	var sql = "insert into appointments (MUid, customer, time, courseID, updated_at) values ('" + req.body.MUid + "', '" + req.body.owner + "', '" + req.body.time + "', '" + req.body.course + "', '" + now() + "')";
 	connectionPool.query(sql, function(err, result) {
 		res.send(result);
 	}); 
 });
 //delete a new item from cart
-app.delete('/cart', function(req, res) {
+app.delete('/appointment', function(req, res) {
 	var sql = "delete from appointments where MUid='" + req.body.tutor + "' and customer='" + req.body.customer + "' and time='" + req.body.time + "' and courseID='" + req.body.course + "'";
 	connectionPool.query(sql, function(err, result) {
 		res.send(result);

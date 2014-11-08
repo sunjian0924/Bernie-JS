@@ -1,10 +1,10 @@
 var app = app || {}; 
-app.CartView = Backbone.View.extend({
+app.AppointmentsView = Backbone.View.extend({
 	initialize: function() {
 		this.render();
 	},
 	render: function() {
-		var template = _.template($("#cart_template").html());
+		var template = _.template($("#appointments_template").html());
 		this.$el.html(template);
 	},
 	events: {

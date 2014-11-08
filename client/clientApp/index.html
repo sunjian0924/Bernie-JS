@@ -5,7 +5,7 @@
 	<input type="button" class="buttonMain" id="home" value="Home" />
 	<input type="button" class="buttonMain" id="profile" value="Profile" />
 	<input type="button" class="buttonMain" id="register" value="Register" />
-	<input type="button" class="buttonMain" id="cart" value="Appointment" />
+	<input type="button" class="buttonMain" id="appoinments" value="Appointment" />
 	<input type="button" class="buttonMain" id="shopping" value="Avaialble Clients" />
 </div>
 
@@ -189,11 +189,24 @@
 
 
 
-<script type="text/template" id="cart_template">
+<script type="text/template" id="appointments_template">
 	<div>    
-		<table class="cart" align="center" id="cart_table">
+		<table class="cart" align="center" id="client_appointments_table">
 	    	<tr>
 		      <th>Tutor</th>
+		      <th>Course</th>
+		      <th>Time</th>
+		      <th></th>
+		      <th></th>
+		    </tr>
+	    </table>
+	</div>
+	<br>
+	<br>
+	<div>    
+		<table class="cart" align="center" id="tutor_appointments_table">
+	    	<tr>
+		      <th>Client</th>
 		      <th>Course</th>
 		      <th>Time</th>
 		      <th></th>
@@ -215,7 +228,7 @@
 	<div id="home_container"></div>
 	<div id="profile_container"></div>
 	<div id="register_container"></div>
-	<div id="cart_container"></div>
+	<div id="appointments_container"></div>
 	<div id="shopping_container"></div>
 </div>
 
@@ -229,7 +242,7 @@
 <script src="js/views/profile.js"></script>
 <script src="js/views/register.js"></script>
 <script src="js/views/shopping.js"></script>
-<script src="js/views/cart.js"></script>
+<script src="js/views/appointments.js"></script>
 <script src="js/views/logout.js"></script>
 
 
