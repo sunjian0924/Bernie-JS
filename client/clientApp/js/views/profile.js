@@ -27,7 +27,7 @@ app.ProfileView = Backbone.View.extend({
 					  	url: "/courses/" + app.cashedData.user,
 					  	data: 
 					  	{
-					  		courses: courses
+					  		courses: JSON.stringify(courses)
 					  	},
 					  	success: function(data) {
 					  		alert("Update success!");
