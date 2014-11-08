@@ -16,7 +16,7 @@ app.AppointmentsView = Backbone.View.extend({
 		var response = confirm("Are you sure you want to cancel this appointment?");
 		if (response) {
 			$.ajax({
-				url: '/cart',
+				url: '/appointment',
 				type: 'delete',
 				data: {
 					tutor: app.objectBuffer.tutor,

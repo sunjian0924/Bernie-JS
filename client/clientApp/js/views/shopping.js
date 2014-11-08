@@ -17,7 +17,7 @@ app.ShoppingView = Backbone.View.extend({
 				alert("choose a time!!");
 			} else {
 				//update database
-				$.post('/cart', {
+				$.post('/appointment', {
 					MUid: app.cashedData.user,
 					course: app.objectBuffer.course,
 					owner: app.objectBuffer.owner,
