@@ -186,8 +186,8 @@ app.get('/appointments/:id', function(req, res) {
 		var sql = sql1 + "; " + sql2;
 		connectionPool.query(sql, function(err, results) {
 			var data = {
-				tutorAppointments: results[0];
-				clientAppointments: results[1];
+				tutorAppointments: results[0],
+				clientAppointments: results[1]
 			};
 			res.send(data);
 		});
