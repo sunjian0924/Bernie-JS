@@ -16,19 +16,22 @@ app.AdminAddDeleteView = Backbone.View.extend({
 		var MUid = $(this.el).find('input#MUid').val();
 		var expertise = $(this.el).find('input#expertise').val();
 		//update database
-		console.log(typeof MUid);
-		$.ajax({
-			url: '/admin',
-			type: 'post',
-			data: {
-				MUid: MUid,
-				expertise: expertise
-			},
-			success: function() {
-				//update view
-				header_view.showAdminAddDel();
-			}
-		});				
+		if (MUid && expertise) {
+			$.ajax({
+				url: '/admin',
+				type: 'post',
+				data: {
+					MUid: MUid,
+					expertise: expertise
+				},
+				success: function() {
+					//update view
+					header_view.showAdminAddDel();
+				}
+			});				
+		} else {
+			alert("Empty field not allowed!");
+		}
 	},
 	deleteTutor: function(event) {
 		//get data
