@@ -21,7 +21,6 @@ app.ProfileView = Backbone.View.extend({
 			  		$.each(data["taking"], function(index, value) {
 			  			courses.push(value["subject"] + value["number"]);
 			  		});
-			  		console.log(courses);
 				  	$.ajax({
 						type: "POST",
 					  	url: "/courses/" + app.cashedData.user,
