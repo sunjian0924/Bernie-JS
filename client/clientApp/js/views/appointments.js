@@ -25,7 +25,7 @@ app.AppointmentsView = Backbone.View.extend({
 					time: app.objectBuffer.time
 				},
 				success: function() {
-					header_view.showCart();	
+					header_view.showAppointments();	
 				}
 			});
 			
