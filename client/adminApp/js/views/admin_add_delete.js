@@ -42,7 +42,7 @@ app.AdminAddDeleteView = Backbone.View.extend({
 				},
 				success: function() {
 					//update view
-					header_view.showAdmin();	
+					header_view.showAdminAddDel();	
 				}
 			});
 		}

@@ -20,7 +20,7 @@ app.AdminMatchView = Backbone.View.extend({
 					alert("No matches found!");
 				} else {
 					alert("Matched with " + data.MUid + " at " + data.time);
-					header_view.showAdmin();
+					header_view.showAdminMatch();
 				}
 			} 
 		});
