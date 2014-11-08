@@ -210,6 +210,21 @@ app.delete('/appointment', function(req, res) {
 	});
 });
 
+//where courses get populated
+app.post('/courses/:id', function(req, res) {
+	if (req.params.id === req.session.user) {
+		var sql = "insert into academics (MUid, courseID, updated_at) values ";
+		for (int i = 0; i < req.body.courses.length - 1; i++) {
+			sql += "(" + mysql.escape(req.session.user) + ", " + mysql.escape(req.body.courses[i]) + ", " + mysql.escape(now()) + "),";
+		}
+		if (req.body.courses.length > 0) {
+			sql += "(" + mysql.escape(req.session.user) + ", " + mysql.escape(req.body.courses[req.body.courses.length - 1]) + ", " + mysql.escape(now()) + "),";
+		}
+		connectionPool.query(sql, function(err, results) {
+			res.send(results);
+		});
+	}
+});
 app.get('/register/:id', function(req, res) {
 	if (req.params.id === req.session.user) {
 		var sql1 = "select courseID from academics where MUid=" + mysql.escape(req.params.id);
