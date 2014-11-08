@@ -16,7 +16,7 @@ app.AdminAddDeleteView = Backbone.View.extend({
 		var MUid = $(this.el).find('input#MUid').val();
 		var expertise = $(this.el).find('input#expertise').val();
 		//update database
-		console.log(MUid);
+		console.log(typeof MUid);
 		$.ajax({
 			url: '/admin',
 			type: 'post',
