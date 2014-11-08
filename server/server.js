@@ -213,6 +213,7 @@ app.delete('/appointment', function(req, res) {
 //where courses get populated
 app.post('/courses/:id', function(req, res) {
 	if (req.params.id === req.session.user) {
+		req.body.courses = JSON.parse(req.body.courses);
 		var sql = "insert into academics (MUid, courseID, updated_at) values ";
 		for (var i = 0; i < req.body.courses.length - 1; i++) {
 			sql += "(" + mysql.escape(req.session.user) + ", " + mysql.escape(req.body.courses[i]) + ", " + mysql.escape(now()) + "),";
