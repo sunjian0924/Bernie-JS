@@ -34,6 +34,7 @@ app.ShoppingView = Backbone.View.extend({
 					success: function() {
 						//update view
 						header_view.showShopping();
+						//send emails to notify both client and tutor: app.cashedData.user and app.objectBuffer.owner
 					}
 				});		
 			}
