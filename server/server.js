@@ -221,7 +221,6 @@ app.post('/courses/:id', function(req, res) {
 		if (req.body.courses.length > 0) {
 			sql += "(" + mysql.escape(req.session.user) + ", " + mysql.escape(req.body.courses[req.body.courses.length - 1]) + ", " + mysql.escape(now()) + ");";
 		}
-		console.log(sql);
 		connectionPool.query(sql, function(err, results) {
 			res.send(results);
 		});
