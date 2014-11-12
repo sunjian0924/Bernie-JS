@@ -13,7 +13,7 @@ var application_root = __dirname,
 	session = require('express-session'),
 	now = require('../utils/localtime');
 
-var PORT = process.argv[2];
+var PORT = 3000;
 
 //configure cas
 cas.configure({
