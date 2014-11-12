@@ -13,7 +13,7 @@ var application_root = __dirname,
 	session = require('express-session'),
 	now = require('../utils/localtime');
 
-var PORT = process.argv[2];
+var PORT = 80;//process.argv[2];
 
 //configure cas
 cas.configure({
@@ -21,7 +21,7 @@ cas.configure({
 	casPath: "/cas",
 	ssl: true,
 	port: 443,
-	service: "http://rlcltmsd01.mcs.miamioh.edu:" + PORT + "/",
+	service: "http://rlcltmsd01.mcs.miamioh.edu",
 	sessionName: "user"
 });
 
