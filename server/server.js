@@ -8,22 +8,14 @@ var application_root = __dirname,
 	methodOverride = require('method-override'),
 	morgan = require('morgan'),
 	mysql = require('mysql'),
-	cas = require('grand_master_cas'),
+	passport = require('passport'),
+	LocalStrategy = require('passport-local').Strategy,
 	cookieParser = require('cookie-parser'),
 	session = require('express-session'),
+	flash = require('connect-flash'),
 	now = require('../utils/localtime');
 
 var PORT = 3000;
-
-//configure cas
-cas.configure({
-	casHost: "muidp.miamioh.edu",
-	casPath: "/cas",
-	ssl: true,
-	port: 443,
-	service: "http://rlcltmsd01.mcs.miamioh.edu:" + PORT + "/",
-	sessionName: "user"
-});
 
 //Create server
 var app = express();
@@ -33,6 +25,9 @@ app.use(cookieParser());
 app.use(session({secret: 'fadsfdsf', 
                  saveUninitialized: true,
                  resave: true}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
 
 //Connect to database
 var connectionPool = mysql.createPool({
@@ -56,18 +51,67 @@ app.use(bodyParser.json({type: 'application/vnd.api+json'}));
 
 app.use(methodOverride());
 app.use(morgan(':remote-addr :method :url :status'));
-//Where to serve static content
-//app.use(express.static(path.join(application_root, '../client/auth')));
-app.use('/', cas.bouncer, express.static(path.join(application_root, '../client/adminApp')));
-//cas happends here
-/*app.get('/login', cas.bouncer, function(req, res) {
-	res.redirect('/');
-});*/
-
-app.get('/logout', cas.logout);
-	
 
 
+
+//configure local authentication
+// used to serialize the user for the session
+passport.serializeUser(function(user, done) {
+	done(null, user.id);
+});
+ 
+// used to deserialize the user
+passport.deserializeUser(function(id, done) {
+	connection.query("select * from admins where id = " + mysql.escape(id), function(err, rows){	
+		done(err, rows[0]);
+	});
+});
+
+passport.use(new LocalStrategy({
+        // by default, local strategy uses username and password, we will override with email
+        usernameField : 'MUid',
+        passwordField : 'password',
+        passReqToCallback : true // allows us to pass back the entire request to the callback
+    },
+    function(req, MUid, password, done) {
+ 
+        connectionPool.query("SELECT * FROM admins WHERE MUid = '" + MUid + "'", function(err, rows){
+			if (err) {
+                return done(err);
+            }
+			if (!rows.length) {
+                return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
+            } 
+			
+			// if the user is found but the password is wrong
+            if (!(rows[0].password == password))
+                return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
+			
+            // all is well, return successful user
+            return done(null, rows[0]);			
+		
+		});
+	})
+);
+
+app.use('/', function(req, res, next) {
+	if (req.user) {
+		next();
+	} else {
+		res.redirect('/login');
+	}
+}, express.static(path.join(application_root, '../client/adminApp')));
+
+app.get('/login', function(req, res) {
+	//display login page
+});
+
+app.post('/login', function(req, res) {
+	passport.authenticate('local', {
+		successRedirect: '/',
+		failureRedirect: '/login'
+	});
+});
 /*
 	REST APIs
 */
