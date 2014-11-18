@@ -62,7 +62,7 @@ app.use(morgan(':remote-addr :method :url :status'));
 //cas happends here
 app.use('/', cas.bouncer, function(req, res) {
 	res.redirect('/content');
-}));
+});
 app.use('/content', express.static(path.join(application_root, '../client/adminApp'));
 app.get('/logout', cas.logout);
 	
