@@ -105,16 +105,7 @@ app.use('/', function(req, res, next) {
 
 app.get('/login', function(req, res) {
 	//display login page
-	fs.readFile('../client/login.html', function (err, html) {
-	    if (err) {
-	        throw err; 
-	    } 
-	    res.writeHeader(200, {
-	    	"Content-Type": "text/html"
-	    });
-	    res.write(html);
-	    res.end();
-	});
+	res.sendfile(__dirname + '../client/login.thml');
 });
 
 app.post('/login', function(req, res) {
