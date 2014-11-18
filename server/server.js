@@ -58,12 +58,12 @@ app.use(methodOverride());
 app.use(morgan(':remote-addr :method :url :status'));
 //Where to serve static content
 //app.use(express.static(path.join(application_root, '../client/auth')));
-
+app.use(express.static(path.join(application_root, '../client/adminApp')));
 //cas happends here
-app.use('/', cas.bouncer, function(req, res) {
-	res.redirect('/content');
+app.get('/login', cas.bouncer, function(req, res) {
+	res.redirect('/');
 });
-app.get('/content', express.static(path.join(application_root, '../client/adminApp')));
+
 app.get('/logout', cas.logout);
 	
 
