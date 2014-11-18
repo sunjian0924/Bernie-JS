@@ -58,13 +58,13 @@ app.use(morgan(':remote-addr :method :url :status'));
 //configure local authentication
 // used to serialize the user for the session
 passport.serializeUser(function(user, done) {
-	console.log(user);
 	done(null, user.id);
 });
  
 // used to deserialize the user
 passport.deserializeUser(function(id, done) {
-	connection.query("select * from admins where id = " + mysql.escape(id), function(err, rows){	
+	connection.query("select * from admins where MUid = " + id, function(err, rows){	
+		console.log(rows);
 		done(err, rows[0]);
 	});
 });
