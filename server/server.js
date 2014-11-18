@@ -95,6 +95,12 @@ passport.use(new LocalStrategy({
 	})
 );
 
+app.get('/login', function(req, res) {
+	//display login page
+	res.sendFile(path.join(application_root, '../client/login.html'));
+	//res.end("haha");
+});
+
 app.use(function(req, res, next) {
 	if (req.user) {
 		next();
@@ -103,11 +109,7 @@ app.use(function(req, res, next) {
 	}
 }, express.static(path.join(application_root, '../client/adminApp')));
 
-app.get('/login', function(req, res) {
-	//display login page
-	res.sendFile(path.join(application_root, '../client/login.html'));
-	//res.end("haha");
-});
+
 
 /*app.post('/login', function(req, res) {
 	passport.authenticate('local', {
