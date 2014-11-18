@@ -105,7 +105,8 @@ app.use('/', function(req, res, next) {
 
 app.get('/login', function(req, res) {
 	//display login page
-	res.sendfile(path.join(application_root, '../client/login.html'));
+	//res.sendfile(path.join(application_root, '../client/login.html'));
+	res.end("haha");
 });
 
 app.post('/login', function(req, res) {
