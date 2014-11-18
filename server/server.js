@@ -63,8 +63,7 @@ passport.serializeUser(function(user, done) {
  
 // used to deserialize the user
 passport.deserializeUser(function(id, done) {
-	connection.query("select * from admins where MUid = " + id, function(err, rows){	
-		console.log(rows);
+	connectionPool.query("select * from admins where MUid = " + id, function(err, rows){	
 		done(err, rows[0]);
 	});
 });
