@@ -75,8 +75,6 @@ passport.use(new LocalStrategy({
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
     function(req, MUid, password, done) {
-    	console.log(MUid);
- 
         connectionPool.query("SELECT * FROM admins WHERE MUid = '" + MUid + "'", function(err, rows){
 			if (err) {
                 return done(err);
@@ -129,16 +127,9 @@ app.use(function(req, res, next) {
 //get identity
 app.get('/whoami', function(req, res) {
 	var data = {
-		username: req.session.user,
-		usertype: 'non-tutor'
+		username: req.user.MUid,
 	};
-	var sql = "select * from hiredtutors where MUid=" + mysql.escape(req.session.user);
-	connectionPool.query(sql, function(err, result) {
-		if (result.length !== 0) {
-			data.usertype = 'tutor';
-		}
-		res.send(data);
-	});	
+	res.send(data);
 });
 //appointment
 app.get('/appointments', function(req, res) {
