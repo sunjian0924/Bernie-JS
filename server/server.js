@@ -101,6 +101,13 @@ app.get('/login', function(req, res) {
 	//res.end("haha");
 });
 
+app.post('/login', function(req, res) {
+	passport.authenticate('local', {
+		successRedirect: '/',
+		failureRedirect: '/login'
+	});
+});
+
 app.use(function(req, res, next) {
 	if (req.user) {
 		next();
@@ -111,12 +118,7 @@ app.use(function(req, res, next) {
 
 
 
-/*app.post('/login', function(req, res) {
-	passport.authenticate('local', {
-		successRedirect: '/',
-		failureRedirect: '/login'
-	});
-});*/
+
 /*
 	REST APIs
 */
