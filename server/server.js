@@ -105,7 +105,7 @@ app.use('/', function(req, res, next) {
 
 app.get('/login', function(req, res) {
 	//display login page
-	res.sendfile(__dirname + '../client/login.thml');
+	res.sendfile(path.join(application_root, '../client/login.html'));
 });
 
 app.post('/login', function(req, res) {
