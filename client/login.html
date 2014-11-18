@@ -22,14 +22,22 @@ input[type=text], input[type=password] {
     display: inline-block;
   	float: left;
 } 
+
+label {
+	font: normal 20px courier !important;
+  	float:left;
+  	width:150px; 
+}
 </style>
 </head>
 
 <body>
 <form method="post" action="/login">
-MUid<input type="text" name="MUid">
+<label for="MUid">MUid</label>
+<input id="MUid" type="text" name="MUid">
 <br>
-password<input type="password" name="password">
+<label for="password">Password</label>
+<input id="password" type="password" name="password">
 <input type="submit" value="Submit">
 </form>
 </body>
