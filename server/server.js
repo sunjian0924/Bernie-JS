@@ -75,6 +75,7 @@ passport.use(new LocalStrategy({
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
     function(req, MUid, password, done) {
+    	console.log(MUid);
  
         connectionPool.query("SELECT * FROM admins WHERE MUid = '" + MUid + "'", function(err, rows){
 			if (err) {
