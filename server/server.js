@@ -110,6 +110,8 @@ app.get('/logout', function(req, res) {
 	res.redirect('/');
 });
 
+
+//works as a barrier
 app.use(function(req, res, next) {
 	if (req.user) {
 		next();
