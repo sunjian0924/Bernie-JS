@@ -105,16 +105,16 @@ app.use(function(req, res, next) {
 
 app.get('/login', function(req, res) {
 	//display login page
-	res.sendfile(path.join(application_root, '../client/login.html'));
+	res.sendFile(path.join(application_root, '../client/login.html'));
 	//res.end("haha");
 });
 
-app.post('/login', function(req, res) {
+/*app.post('/login', function(req, res) {
 	passport.authenticate('local', {
 		successRedirect: '/',
 		failureRedirect: '/login'
 	});
-});
+});*/
 /*
 	REST APIs
 */
