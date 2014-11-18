@@ -58,6 +58,7 @@ app.use(morgan(':remote-addr :method :url :status'));
 //configure local authentication
 // used to serialize the user for the session
 passport.serializeUser(function(user, done) {
+	console.log(user);
 	done(null, user.id);
 });
  
