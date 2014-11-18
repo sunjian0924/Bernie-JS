@@ -10,7 +10,7 @@ var application_root = __dirname,
 	mysql = require('mysql'),
 	cas = require('grand_master_cas'),
 	cookieParser = require('cookie-parser'),
-	//session = require('express-session'),
+	session = require('express-session'),
 	now = require('../utils/localtime');
 
 var PORT = 3000;
@@ -30,9 +30,9 @@ var app = express();
 
 //session management middleware
 app.use(cookieParser());
-/*app.use(session({secret: 'fadsfdsf', 
+app.use(session({secret: 'fadsfdsf', 
                  saveUninitialized: true,
-                 resave: true}));*/
+                 resave: true}));
 
 //Connect to database
 var connectionPool = mysql.createPool({
