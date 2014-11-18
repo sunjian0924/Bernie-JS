@@ -103,11 +103,12 @@ app.get('/login', function(req, res) {
 });
 
 app.post('/login', function(req, res) {
-	console.log(req.params.MUid);
-	passport.authenticate('local', {
+	console.log(req.param.MUid);
+	/*passport.authenticate('local', {
 		successRedirect: '/',
 		failureRedirect: '/login'
-	});
+	});*/
+	res.end('yes');
 });
 
 app.use(function(req, res, next) {
