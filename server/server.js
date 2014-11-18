@@ -114,7 +114,7 @@ app.get('/login', function(req, res) {
 	    });
 	    res.write(html);
 	    res.end();
-	}
+	});
 });
 
 app.post('/login', function(req, res) {
