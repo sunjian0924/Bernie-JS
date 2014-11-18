@@ -68,7 +68,7 @@ passport.deserializeUser(function(id, done) {
 	});
 });
 
-passport.use('local', new LocalStrategy({
+passport.use(new LocalStrategy({
         // by default, local strategy uses username and password, we will override with email
         usernameField : 'MUid',
         passwordField : 'password',
