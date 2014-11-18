@@ -95,13 +95,13 @@ passport.use(new LocalStrategy({
 	})
 );
 
-app.use('/', function(req, res, next) {
+/*app.use('/', function(req, res, next) {
 	if (req.user) {
 		next();
 	} else {
 		res.redirect('/login');
 	}
-}, express.static(path.join(application_root, '../client/adminApp')));
+}, express.static(path.join(application_root, '../client/adminApp')));*/
 
 app.get('/login', function(req, res) {
 	//display login page
