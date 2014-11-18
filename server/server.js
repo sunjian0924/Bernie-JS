@@ -13,6 +13,7 @@ var application_root = __dirname,
 	cookieParser = require('cookie-parser'),
 	session = require('express-session'),
 	flash = require('connect-flash'),
+	fs = require('fs'),
 	now = require('../utils/localtime');
 
 var PORT = 3000;
@@ -104,8 +105,16 @@ app.use('/', function(req, res, next) {
 
 app.get('/login', function(req, res) {
 	//display login page
-	req.user = 'sunj3';
-	res.redirect('/');
+	fs.readFile('../client/login.html', function (err, html) {
+	    if (err) {
+	        throw err; 
+	    } 
+	    res.writeHeader(200, {
+	    	"Content-Type": "text/html"
+	    });
+	    res.write(html);
+	    res.end();
+	}
 });
 
 app.post('/login', function(req, res) {
