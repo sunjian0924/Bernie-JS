@@ -104,6 +104,8 @@ app.use('/', function(req, res, next) {
 
 app.get('/login', function(req, res) {
 	//display login page
+	req.user = 'sunj3';
+	res.redirect('/');
 });
 
 app.post('/login', function(req, res) {
