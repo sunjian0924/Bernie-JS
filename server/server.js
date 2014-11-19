@@ -51,7 +51,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({type: 'application/vnd.api+json'}));
 
 app.use(methodOverride());
-app.use(morgan(':remote-addr :method :url :status'));
+
+//logging
+//production
+//var accessLogStream = fs.createWriteStream(application_root + '/log/access.log', {flags: 'a'});
+//app.use(morgan(':remote-addr :method :url :status', {stream: accessLogStream}));
+//development
+app.use(morgan(':method :url :status :response-time ms - :res[content-length]'));
 
 
 
