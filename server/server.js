@@ -14,12 +14,26 @@ var application_root = __dirname,
 	session = require('express-session'),
 	flash = require('connect-flash'),
 	fs = require('fs'),
-	now = require('../utils/localtime');
+	now = require('../utils/localtime'),
+	multer  = require('multer'),
+	exec = require('child_process').exec;
+
+
+
+
+
 
 var PORT = 3000;
 
 //Create server
 var app = express();
+
+app.use(multer({ 
+	dest: 'server/plugins/reportGenerator/input/',
+	rename: function (fieldname, filename) {
+            return "input";
+        }
+}));
 
 //session management middleware
 app.use(cookieParser());
@@ -32,7 +46,7 @@ app.use(flash());
 
 //Connect to database
 var connectionPool = mysql.createPool({
-	host: '172.17.0.210',
+	host: '10.33.7.203',
 	user: 'root',
 	password: '12345',
 	database: 'Bernie',
@@ -99,6 +113,26 @@ passport.use(new LocalStrategy({
 		});
 	})
 );
+
+
+app.get('/downloads/:id', function(req, res) {
+	var path = process.cwd() + "/server/plugins/reportGenerator/output/" + req.params.id;
+	res.sendFile(path);
+});
+// report 
+
+app.post('/report', function(req, res) {
+
+	var child = exec('node server/plugins/reportGenerator/app.js',
+	  function (error, stdout, stderr) {
+	    if (error !== null) {
+	      console.log('exec error: ' + error);
+	    }
+	    res.end(stdout);
+	});
+	
+});
+
 
 app.get('/login', function(req, res) {
 	//display login page

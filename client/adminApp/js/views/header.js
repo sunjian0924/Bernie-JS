@@ -9,7 +9,12 @@ app.HeaderView = Backbone.View.extend({
 		"click #profile": "showProfile",
 		"click #admin_add_delete": "showAdminAddDel",
 		"click #admin_match": "showAdminMatch",
-		"click #admin_appointments": "showAdminAppointments"
+		"click #admin_appointments": "showAdminAppointments",
+		"click #admin_report": "showAdminReport",
+	},
+	showAdminReport: function(event) {
+		this.redraw();
+		var report_view = new app.AdminReportView({el: $("#admin_report_container")});
 	},
 	showHome: function(event) {
 		this.redraw();

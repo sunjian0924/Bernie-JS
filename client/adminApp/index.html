@@ -11,7 +11,19 @@
 </div>
 
 <script type="text/template" id="admin_report_template">
-	report
+	<form 
+	 id      =  "uploadForm"
+     enctype =  "multipart/form-data"
+     action  =  "/report"
+     method  =  "post"
+	>
+		<input type="file" id="inputReport" />
+		<input type="submit" id="reportG" value="Generate Report" name="submit">
+	</form>
+	<div id="download">
+		
+	<div>
+
 </script>
 
 
@@ -94,6 +106,7 @@
 	<div id="admin_add_delete_container"></div>
 	<div id="admin_match_container"></div>
 	<div id="admin_appointments_container"></div>
+	<div id="admin_report_container"></div>
 </div>
 
 
@@ -110,6 +123,7 @@
 <script src="js/views/admin_add_delete.js"></script>
 <script src="js/views/admin_match.js"></script>
 <script src="js/views/admin_appointments.js"></script>
+<script src="js/views/admin_report.js"></script>
 <script src="js/views/logout.js"></script>
 
 
