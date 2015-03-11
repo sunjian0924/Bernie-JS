@@ -150,6 +150,10 @@ app.get('/logout', function(req, res) {
 	res.redirect('/');
 });
 
+app.get('/static/:id', function(req, res) {
+	res.sendFile(path.join(application_root, '../client/assets/' + req.params.id));
+});
+
 
 //works as a barrier
 app.use(function(req, res, next) {
