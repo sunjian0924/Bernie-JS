@@ -100,11 +100,13 @@ app.HeaderView = Backbone.View.extend({
 		$("#admin_add_delete_container").remove();	
 		$("#admin_match_container").remove();
 		$("#admin_appointments_container").remove();
+		$("#admin_report_container").remove();
 		$("#containers").append('<div id="home_container"></div>');
 		$("#containers").append('<div id="profile_container"></div>');
 		$("#containers").append('<div id="admin_add_delete_container"></div>');	
 		$("#containers").append('<div id="admin_match_container"></div>');
 		$("#containers").append('<div id="admin_appointments_container"></div>');
+		$("#containers").append('<div id="admin_report_container"></div>');
 	}
 });
 
