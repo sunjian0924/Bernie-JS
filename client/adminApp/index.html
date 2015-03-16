@@ -1,6 +1,14 @@
+<!DOCTYPE html>
+<html>
 <head>
+	<title>Bernie,Admin</title>
 	<link rel="stylesheet" type="text/css" href="static/base.css">
+
 </head>
+
+<body>
+
+
 <div id="header">
 	<input type="button" class="buttonMain" id="home" value="Home" />
 	<input type="button" class="buttonMain" id="profile" value="Profile" />
@@ -17,7 +25,9 @@
      action  =  "/report"
      method  =  "post"
 	>
-		<input type="file" id="inputReport" />
+
+		<input type="file" id="inputReport">
+
 		<input type="submit" id="reportG" value="Generate Report" name="submit">
 	</form>
 	<div id="download">
@@ -94,7 +104,7 @@
 </script>
 
 <script type="text/template" id="logout_template">
-	<a href='logout' id="logout">logout</a>
+	<a href='logout' id="logout"><button class="exit-btn">Log Out</button></a>
 </script>
 
 <br>
@@ -125,8 +135,8 @@
 <script src="js/views/admin_appointments.js"></script>
 <script src="js/views/admin_report.js"></script>
 <script src="js/views/logout.js"></script>
-
-
+</body>
+</html>
 
 
 
