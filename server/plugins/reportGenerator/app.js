@@ -3,13 +3,13 @@ var prettyjson = require('prettyjson');
 var fs = require('fs');
 var json2csv = require('json2csv');
 
-
+// server/plugins/reportGenerator/
 var csvPrint = function(schedule, date) {
     json2csv({data: schedule, fields: ["time", "location", "course", "consultant", "clients"]}, function(err, csv) {
         if (err)  {
             //console.log(err);
         }
-        fs.writeFile("server/plugins/reportGenerator/output/" + date + ".csv", csv, function(err) {
+        fs.writeFile("output/" + date + ".csv", csv, function(err) {
             if(err) {
                 //console.log(err);
             } else {
@@ -19,20 +19,18 @@ var csvPrint = function(schedule, date) {
     });
 }
 
+var filterCanceled = function(myTableArray) {
+    var result = [];
+    myTableArray.forEach(function(element) {
+        if (element[8] === "") {
+            result.push(element);
+        }
+    });
+    return result;
+}
+
 var rawSchedule = function(myTableArray) {
     var schedule = {};
-    schedule["8:00 AM"] = [];
-    schedule["9:00 AM"] = [];
-    schedule["10:00 AM"] = [];
-    schedule["11:00 AM"] = [];
-    schedule["12:00 PM"] = [];
-    schedule["1:00 PM"] = [];
-    schedule["2:00 PM"] = [];
-    schedule["3:00 PM"] = [];
-    schedule["4:00 PM"] = [];
-    schedule["5:00 PM"] = [];
-    schedule["6:00 PM"] = [];
-    schedule["7:00 PM"] = [];
 
     myTableArray.forEach(function(element) {
         var temp = {};
@@ -52,6 +50,9 @@ var rawSchedule = function(myTableArray) {
             if (temp.group !== "yes") {
                 schedule[element[1]].push(temp);
             }
+        } else {
+            schedule[element[1]] = [];
+            schedule[element[1]].push(temp);
         }
     });
     return schedule;
@@ -121,22 +122,21 @@ var finalSchedule = function(schedule) {
     };
 
     var mapping = {
-        "8:00 AM"  : action1,  
-        "9:00 AM"  : action1, 
-        "10:00 AM" : action1,
-        "11:00 AM" : action1,  
-        "12:00 PM" : action1, 
-        "1:00 PM"  : action1, 
-        "2:00 PM"  : action1, 
-        "3:00 PM"  : action1, 
-        "4:00 PM"  : action1,
-        "5:00 PM"  : action2, 
-        "6:00 PM"  : action2, 
-        "7:00 PM"  : action2
+        "8"  : action1,  
+        "9"  : action1, 
+        "10" : action1,
+        "11" : action1,  
+        "12" : action1, 
+        "1"  : action1, 
+        "2"  : action1, 
+        "3"  : action1, 
+        "4"  : action1,
+        "5"  : action2, 
+        "6"  : action2, 
+        "7"  : action2
     };
-    
     for (var k1 in schedule) {
-        mapping[k1](k1);
+        mapping[k1.split(":")[0]](k1);
     }
     return result;
 }
@@ -146,7 +146,7 @@ var getDate = function(rawDate) {
     return temp[0] + '-' + temp[1] + '-' + temp[2];
 }
 
-fs.readFile('server/plugins/reportGenerator/input/input.html', {"encoding" : "utf8" }, function(err, data) {
+fs.readFile('input/input.html', {"encoding" : "utf8" }, function(err, data) {
     if (err) throw err;
     jsdom.env({
         html: data,
@@ -164,12 +164,12 @@ fs.readFile('server/plugins/reportGenerator/input/input.html', {"encoding" : "ut
             });
             // get rid of the first element
             myTableArray.splice(0, 1);
+            myTableArray = filterCanceled(myTableArray);
             var schedule = rawSchedule(myTableArray);
             schedule = finalSchedule(schedule);
 
             var date = getDate(myTableArray[0][0]);
-            csvPrint(schedule, date);
-            console.log(date);
+            csvPrint(schedule, date); 
         }
     });
 });
