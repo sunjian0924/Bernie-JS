@@ -168,6 +168,7 @@ fs.readFile('server/plugins/reportGenerator/input/input.html', {"encoding" : "ut
             schedule = finalSchedule(schedule);
 
             var date = getDate(myTableArray[0][0]);
+            console.log(date);
             csvPrint(schedule, date); 
         }
     });
