@@ -3,13 +3,12 @@ var prettyjson = require('prettyjson');
 var fs = require('fs');
 var json2csv = require('json2csv');
 
-// server/plugins/reportGenerator/
 var csvPrint = function(schedule, date) {
     json2csv({data: schedule, fields: ["time", "location", "course", "consultant", "clients"]}, function(err, csv) {
         if (err)  {
             //console.log(err);
         }
-        fs.writeFile("output/" + date + ".csv", csv, function(err) {
+        fs.writeFile("server/plugins/reportGenerator/output/" + date + ".csv", csv, function(err) {
             if(err) {
                 //console.log(err);
             } else {
@@ -146,7 +145,7 @@ var getDate = function(rawDate) {
     return temp[0] + '-' + temp[1] + '-' + temp[2];
 }
 
-fs.readFile('input/input.html', {"encoding" : "utf8" }, function(err, data) {
+fs.readFile('server/plugins/reportGenerator/input/input.html', {"encoding" : "utf8" }, function(err, data) {
     if (err) throw err;
     jsdom.env({
         html: data,
