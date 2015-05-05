@@ -28,7 +28,39 @@ var filterCanceled = function(myTableArray) {
     return result;
 }
 
+/*
+    input specs:
+
+    [   '4/3/2015',                                  -- date               /\d{1,2}\/\d{1,2}\/\d{4}/g  
+        '1:00 PM',                                   -- time               /\d{1,2}\:\d{1,2}\ AM|\d{1,2}\:\d{1,2}\ PM/g
+        'Rachel Claire Jacoby',                      -- person name
+        'BERNIE - Tutorial Assistance Program',      -- center name
+        'Christopher Taylor',                        -- person name
+        'MTH-151 Sobecki 1520',                      -- course name
+        'Tutoring',                                  -- reason
+        '9377518790',                                -- phone number
+        '',                                          -- status
+        '' ]
+
+    Due to the nature of this plugin, only time has to be checked
+*/
+
+
+var checkInput = function(myTableArray) {
+    var reg = /\d{1,2}\:\d{1,2}\ AM|\d{1,2}\:\d{1,2}\ PM/;
+    var count = 0;
+    var size = myTableArray.length;
+    for (var i = size - 1; i >= 0; i--) {
+        if (!reg.test(myTableArray[i][1])) {
+            count++;
+            myTableArray.splice(i, 1);
+        }
+    }
+    return count;
+}
+
 var rawSchedule = function(myTableArray) {
+
     var schedule = {};
     myTableArray.forEach(function(element) {
         var temp = {};
@@ -53,10 +85,12 @@ var rawSchedule = function(myTableArray) {
             schedule[element[1]].push(temp);
         }
     });
+
     return schedule;
 }
 
 var intermediateSchedule = function(schedule1, schedule2) {
+
     var result = {};
     for (var k1 in schedule1) {
         var size = schedule1[k1].length;
@@ -80,6 +114,7 @@ var intermediateSchedule = function(schedule1, schedule2) {
 }
 
 var finalSchedule2 = function(schedule) {
+
     var result = [];
     var actionS = function(time, cNum) {
         var Sslots = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"];
